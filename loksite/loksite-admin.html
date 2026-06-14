@@ -978,6 +978,7 @@ body{
     <button class="an-f" onclick="anPeriod('7d',this)">7 derniers jours</button>
     <button class="an-f" onclick="anPeriod('month',this)">Ce mois</button>
     <button class="an-f" onclick="anPeriod('lastmonth',this)">Mois dernier</button>
+    <button class="an-f" onclick="anPeriod('all',this)">Tout</button>
     <button class="an-f" onclick="anPeriod('custom',this)">Personnalisé</button>
     <div id="an-custom-range" style="display:none;gap:8px;align-items:center;margin-left:8px">
       <input type="date" id="an-date-from" style="padding:5px 10px;border:1px solid var(--bd2);border-radius:8px;font-size:11px;font-family:var(--font)">
@@ -1398,6 +1399,12 @@ body{
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         Analytics Google
         <span id="cd-analytics-updated" style="font-size:10px;color:var(--t3);font-weight:400;margin-left:auto"></span>
+      </div>
+      <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap">
+        <button class="an-f" onclick="cdLoadPeriod('7d')" style="font-size:9px;padding:3px 8px">7j</button>
+        <button class="an-f active" onclick="cdLoadPeriod('month')" style="font-size:9px;padding:3px 8px">30j</button>
+        <button class="an-f" onclick="cdLoadPeriod('3m')" style="font-size:9px;padding:3px 8px">3m</button>
+        <button class="an-f" onclick="cdLoadPeriod('all')" style="font-size:9px;padding:3px 8px">Tout</button>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px">
         <div style="background:var(--s2);border-radius:9px;padding:10px;text-align:center">
@@ -2938,7 +2945,7 @@ async function loadAnalyticsClients(periodOverride) {
 
     const { data, error } = await sb
       .from('analytics_events')
-      .select('client_id, session_id, duration, created_at')
+      .select('client_id, session_id, visitor_id, duration, created_at')
       .gte('created_at', range.from)
       .lte('created_at', range.to)
       .limit(50000);
@@ -2958,6 +2965,7 @@ async function loadAnalyticsClients(periodOverride) {
     // Calculer les stats par client
     Object.entries(byClient).forEach(([cid, rows]) => {
       const sessions = new Set(rows.map(r => r.session_id));
+      const visitors = new Set(rows.map(r => r.visitor_id || r.session_id).filter(Boolean));
       const pv = rows.length;
       const durations = rows.map(r => r.duration||0).filter(d => d > 0);
       const avgDur = durations.length ? durations.reduce((a,b)=>a+b,0)/durations.length : 0;
@@ -2986,7 +2994,7 @@ async function loadAnalyticsClients(periodOverride) {
         client_id:    cid,
         active_now:   activeNow,
         sessions:     sessions.size,
-        users:        sessions.size,
+        users:        visitors.size,
         pageviews:    pv,
         avg_duration: avgDur,
         bounce_rate:  bounceRate,
@@ -3376,6 +3384,8 @@ function anGetRange(period, customFrom, customTo) {
   var now = new Date();
   var from, to = now.toISOString();
   switch(period) {
+    case 'all': from = new Date('2025-01-01').toISOString(); break;
+    case '3m': var m3 = new Date(now); m3.setMonth(m3.getMonth()-3); from = m3.toISOString(); break;
     case 'today': from = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString(); break;
     case 'yesterday': var y = new Date(now); y.setDate(y.getDate()-1); from = new Date(y.getFullYear(), y.getMonth(), y.getDate()).toISOString(); to = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString(); break;
     case '7d': from = new Date(now.getTime() - 7*24*60*60*1000).toISOString(); break;
@@ -3454,6 +3464,46 @@ async function anLoadVitrineData(period, customFrom, customTo) {
 
 // Charger au démarrage
 setTimeout(function(){ anLoadVitrineData('today'); }, 2000);
+
+
+// Charger les analytics d'un client pour une période spécifique
+async function cdLoadPeriod(period) {
+  if (!cdCurrentId) return;
+  var range = anGetRange(period);
+  try {
+    var { data, error } = await sb.from('analytics_events')
+      .select('session_id, visitor_id, duration, created_at')
+      .eq('client_id', cdCurrentId)
+      .gte('created_at', range.from)
+      .lte('created_at', range.to)
+      .limit(50000);
+    if (error || !data) return;
+    var sessions = new Set(data.map(function(r){ return r.session_id; }));
+    var visitors = new Set(data.map(function(r){ return r.visitor_id || r.session_id; }).filter(Boolean));
+    var durations = data.map(function(r){ return r.duration || 0; }).filter(function(d){ return d > 0; });
+    var avgDur = durations.length ? durations.reduce(function(a,b){return a+b;},0)/durations.length : 0;
+    var sessionPages = {};
+    data.forEach(function(r){ sessionPages[r.session_id] = (sessionPages[r.session_id]||0)+1; });
+    var bounced = Object.values(sessionPages).filter(function(c){return c===1;}).length;
+    var bounceRate = sessions.size ? Math.round(bounced/sessions.size*100) : 0;
+    var since5 = new Date(Date.now() - 5*60*1000);
+    var activeNow = new Set(data.filter(function(r){ return new Date(r.created_at) >= since5; }).map(function(r){ return r.session_id; })).size;
+
+    var el = document.getElementById;
+    var s = function(id, val){ var x = document.getElementById(id); if(x) x.textContent = val; };
+    s('cd-active-now', activeNow);
+    s('cd-sessions', sessions.size.toLocaleString('fr-FR'));
+    s('cd-users', visitors.size.toLocaleString('fr-FR'));
+    s('cd-pageviews', data.length.toLocaleString('fr-FR'));
+    var m = Math.floor(avgDur/60), sec = Math.floor(avgDur%60);
+    s('cd-duration', m > 0 ? m+'m '+sec+'s' : sec+'s');
+    s('cd-bounce', bounceRate + '%');
+    s('cd-analytics-updated', period === 'all' ? 'Depuis toujours' : period);
+    // Highlight button
+    document.querySelectorAll('.cd-section .an-f').forEach(function(b){ b.classList.remove('active'); });
+    event.target.classList.add('active');
+  } catch(err) { console.warn('[cdLoadPeriod]', err); }
+}
 
 </script>
 
