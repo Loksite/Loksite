@@ -1,0 +1,2718 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Loksite — Sites web IA pour commerces locaux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   LOKSITE — Design System
+═══════════════════════════════════════════════ */
+:root {
+  --bg:       #07090E;
+  --bg2:      #0B0E16;
+  --s1:       #11141D;
+  --s1-2:     #171B27;
+  --text:     #F5F7FA;
+  --t2:       #98A2B8;
+  --t3:       #5C677E;
+  --pr:       #6D5DFC;
+  --pr2:      #5849e0;
+  --pr-light: rgba(109,93,252,.14);
+  --blue:     #4F8CFF;
+  --blue2:    #2F6FE0;
+  --blue-light: rgba(79,140,255,.14);
+  --green:    #22C55E;
+  --amber:    #F59E0B;
+  --red:      #EF4444;
+  --border:   rgba(255,255,255,.07);
+  --border2:  rgba(255,255,255,.13);
+  --sh:       0 1px 2px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.35);
+  --sh-md:    0 4px 16px rgba(0,0,0,.4), 0 1px 4px rgba(0,0,0,.3);
+  --sh-lg:    0 12px 48px rgba(0,0,0,.45), 0 4px 16px rgba(0,0,0,.3);
+  --sh-xl:    0 24px 64px rgba(0,0,0,.5);
+  --glow-pr:  0 0 90px -10px rgba(109,93,252,.45);
+  --glow-blue: 0 0 90px -10px rgba(79,140,255,.4);
+  --font:     'Sora', system-ui, sans-serif;
+  --mono:     'JetBrains Mono', monospace;
+  --r:        14px;
+  --r-lg:     22px;
+  --r-xl:     30px;
+  --ease:     cubic-bezier(.4,0,.2,1);
+  --spring:   cubic-bezier(.34,1.56,.64,1);
+}
+/* Les "captures produit" (mockups dashboard/éditeur) restent en thème clair —
+   c'est l'interface réelle, claire, qui s'affiche sur le fond sombre du site */
+.dash-mock, .editor-mock {
+  --s1:       #FFFFFF;
+  --bg:       #F8FAFC;
+  --text:     #0F172A;
+  --t2:       #64748B;
+  --t3:       #94A3B8;
+  --border:   rgba(15,23,42,.07);
+  --border2:  rgba(15,23,42,.12);
+  --pr-light: rgba(109,93,252,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  touch-action:manipulation;
+  overscroll-behavior:none;
+}
+button,input,a{touch-action:manipulation}
+img{max-width:100%;display:block}
+
+/* ══ UTILS ══ */
+.container{max-width:1120px;margin:0 auto;padding:0 24px}
+.tag{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--pr);background:var(--pr-light);border:1px solid rgba(109,93,252,.2);
+  padding:5px 12px;border-radius:20px;margin-bottom:18px;
+}
+.tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--pr);flex-shrink:0}
+
+/* ══ REVEAL ══ */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+
+/* ══ NAV ══ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:800;
+  padding:0 24px;transition:background .3s,box-shadow .3s,backdrop-filter .3s;
+}
+.nav.scrolled{
+  background:rgba(7,9,14,.78);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 1px 0 var(--border);
+}
+.nav-inner{
+  max-width:1120px;margin:0 auto;height:64px;
+  display:flex;align-items:center;gap:28px;
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.nav-logo-mark{
+  width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.nav-logo-mark svg{width:32px;height:32px;display:block}
+.nav-logo-name{font-size:17px;font-weight:900;color:var(--text);letter-spacing:-.05em}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1}
+.nav-link{
+  padding:7px 14px;font-size:13px;font-weight:500;color:var(--t2);
+  text-decoration:none;border-radius:10px;transition:all .15s;white-space:nowrap;
+}
+.nav-link:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.nav-spacer{flex:1} /* pousse les actions à droite quand nav-links est caché */
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+/* Hamburger */
+.nav-hamburger{
+  display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;
+  width:38px;height:38px;background:none;border:1.5px solid var(--border2);
+  border-radius:10px;cursor:pointer;padding:0;flex-shrink:0;transition:all .15s;
+}
+.nav-hamburger:hover{background:var(--s1);border-color:var(--border2)}
+.nav-hamburger span{width:18px;height:2px;background:var(--text);border-radius:2px;transition:all .25s cubic-bezier(.4,0,.2,1)}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+/* Mobile menu overlay */
+.mob-nav-overlay{
+  display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);
+  z-index:999;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  cursor:pointer;
+}
+.mob-nav-overlay.open{display:block}
+/* Mobile menu drawer */
+.mob-nav-drawer{
+  position:fixed;top:0;right:-100%;width:min(300px,85vw);height:100dvh;
+  background:var(--s1);z-index:1000;
+  box-shadow:-12px 0 48px rgba(15,23,42,.18);
+  display:flex;flex-direction:column;
+  transition:right .3s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;
+}
+.mob-nav-drawer.open{right:0}
+.mob-nav-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 22px 16px;border-bottom:1px solid var(--border);
+}
+.mob-nav-close{
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  background:var(--s2);border:1px solid var(--border);border-radius:9px;
+  cursor:pointer;font-size:18px;color:var(--text-dim);line-height:1;
+  transition:all .15s;
+}
+.mob-nav-close:hover{background:#fee2e2;color:var(--red);border-color:rgba(239,68,68,.2)}
+.mob-nav-links{display:flex;flex-direction:column;padding:12px 14px;gap:2px;flex:1}
+.mob-nav-link{
+  display:flex;align-items:center;gap:10px;padding:12px 14px;
+  font-size:15px;font-weight:500;color:var(--text);
+  text-decoration:none;border-radius:12px;transition:all .15s;
+}
+.mob-nav-link:hover{background:var(--s2);color:var(--pr)}
+.mob-nav-sep{height:1px;background:var(--border);margin:8px 14px}
+.mob-nav-footer{padding:16px 22px 28px;display:flex;flex-direction:column;gap:8px}
+.mob-nav-footer .btn-ghost{width:100%;justify-content:center;padding:12px}
+.mob-nav-footer .btn-pr{width:100%;justify-content:center;padding:13px;font-size:14px}
+.btn-ghost{
+  padding:8px 16px;font-size:13px;font-weight:600;color:var(--t2);
+  background:transparent;border:1.5px solid var(--border2);border-radius:12px;
+  cursor:pointer;font-family:var(--font);text-decoration:none;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:all .15s;
+}
+.btn-ghost:hover{color:var(--text);border-color:rgba(255,255,255,.18);background:var(--s1)}
+.btn-pr{
+  padding:9px 20px;font-size:13px;font-weight:700;color:#fff;
+  background:var(--pr);border:none;border-radius:12px;
+  cursor:pointer;font-family:var(--font);text-decoration:none;
+  display:inline-flex;align-items:center;gap:7px;
+  box-shadow:0 2px 10px rgba(109,93,252,.3);
+  transition:all .18s var(--ease);
+}
+.btn-pr:hover{background:var(--pr2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(109,93,252,.4)}
+
+/* ══ HERO ══ */
+.hero{padding:140px 0 90px;position:relative;overflow:hidden}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(109,93,252,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(109,93,252,.04) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,black 40%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,black 40%,transparent 100%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);
+  width:900px;height:600px;
+  background:radial-gradient(ellipse,rgba(109,93,252,.11) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-inner{
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;
+  align-items:center;position:relative;z-index:1;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:600;color:var(--t2);
+  background:var(--s1);border:1px solid var(--border2);border-radius:20px;
+  padding:5px 14px 5px 8px;margin-bottom:26px;box-shadow:var(--sh);
+  opacity:0;animation:hFadeUp .7s var(--ease) .1s forwards;
+}
+.hero-badge-dot{
+  width:22px;height:22px;background:linear-gradient(135deg,var(--green),#16a34a);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;
+}
+.hero-h1{
+  font-size:clamp(38px,5.5vw,64px);font-weight:900;
+  line-height:1.02;letter-spacing:-.06em;color:var(--text);
+  margin-bottom:20px;
+  opacity:0;animation:hFadeUp .7s var(--ease) .2s forwards;
+}
+.hero-h1 .acc{
+  background:linear-gradient(135deg,var(--pr) 0%,#a78bfa 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:16px;line-height:1.75;color:var(--t2);
+  max-width:480px;margin-bottom:10px;font-weight:400;
+  opacity:0;animation:hFadeUp .7s var(--ease) .3s forwards;
+}
+/* IA callout in hero sub */
+.ia-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,rgba(109,93,252,.1),rgba(139,92,246,.08));
+  border:1px solid rgba(109,93,252,.2);border-radius:20px;
+  padding:4px 12px;font-size:12px;font-weight:700;color:var(--pr);
+  margin:8px 0 20px;
+  opacity:0;animation:hFadeUp .7s var(--ease) .35s forwards;
+}
+.ia-pill svg{width:12px;height:12px}
+.hero-actions{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  opacity:0;animation:hFadeUp .7s var(--ease) .4s forwards;
+}
+.btn-hero{
+  padding:14px 26px;font-size:14px;font-weight:700;color:#fff;
+  background:var(--pr);border:none;border-radius:14px;cursor:pointer;
+  font-family:var(--font);text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+  box-shadow:0 4px 20px rgba(109,93,252,.35);
+  transition:all .2s var(--spring);
+}
+.btn-hero:hover{background:var(--pr2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(109,93,252,.45)}
+.btn-hero-ghost{
+  padding:14px 22px;font-size:14px;font-weight:600;color:var(--t2);
+  background:var(--s1);border:1.5px solid var(--border2);border-radius:14px;
+  cursor:pointer;font-family:var(--font);text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+  box-shadow:var(--sh);transition:all .18s;
+}
+.btn-hero-ghost:hover{color:var(--text);border-color:rgba(255,255,255,.18);transform:translateY(-1px);box-shadow:var(--sh-md)}
+.hero-stats{
+  display:flex;align-items:center;gap:28px;margin-top:40px;
+  padding-top:28px;border-top:1px solid var(--border);
+  opacity:0;animation:hFadeUp .7s var(--ease) .5s forwards;
+}
+.hero-stat-val{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.04em}
+.hero-stat-lbl{font-size:11.5px;color:var(--t3);font-weight:500;margin-top:2px}
+@keyframes hFadeUp{to{opacity:1;transform:translateY(0)}}
+
+/* Dashboard mock */
+.hero-visual{
+  position:relative;
+  opacity:0;animation:hSlide .9s var(--ease) .3s forwards;
+}
+.hero-visual::before{
+  content:'';position:absolute;top:10%;left:5%;right:5%;bottom:10%;
+  background:radial-gradient(ellipse at 50% 40%,rgba(109,93,252,.35) 0%,rgba(79,140,255,.18) 45%,transparent 75%);
+  filter:blur(60px);z-index:-1;pointer-events:none;
+}
+@keyframes hSlide{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+.dash-mock{
+  background:var(--s1);border:1px solid var(--border);border-radius:var(--r-xl);
+  box-shadow:var(--sh-xl),0 0 0 1px rgba(109,93,252,.05);
+  overflow:hidden;
+  transform:perspective(1000px) rotateY(-5deg) rotateX(2deg);
+  transform-origin:center;transition:transform .5s var(--ease);
+}
+.dash-mock:hover{transform:perspective(1000px) rotateY(0) rotateX(0)}
+.mock-top{
+  height:44px;background:var(--s1);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 14px;gap:8px;
+}
+.mock-dot{width:8px;height:8px;border-radius:50%}
+.mock-dot:nth-child(1){background:#ff5f57}
+.mock-dot:nth-child(2){background:#febc2e}
+.mock-dot:nth-child(3){background:#28c840}
+.mock-logo{margin-left:8px;font-size:12px;font-weight:900;color:var(--pr);letter-spacing:-.04em}
+.mock-body{display:grid;grid-template-columns:130px 1fr;height:300px}
+.mock-sb{background:var(--s1);border-right:1px solid var(--border);padding:10px 6px;display:flex;flex-direction:column;gap:2px}
+.mock-sb-item{height:26px;border-radius:7px;display:flex;align-items:center;padding:0 9px;gap:6px;font-size:9px;font-weight:500;color:var(--t2)}
+.mock-sb-item.active{background:var(--pr-light);color:var(--pr);font-weight:700}
+.mock-sb-icon{width:10px;height:10px;border-radius:3px;background:currentColor;opacity:.5;flex-shrink:0}
+.mock-sb-item.active .mock-sb-icon{opacity:1}
+.mock-content{background:#F8FAFC;padding:14px;display:flex;flex-direction:column;gap:10px}
+.mock-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.mock-kpi{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:9px 11px}
+.mock-kpi-lbl{font-size:7.5px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.mock-kpi-val{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.04em}
+.mock-chart{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:10px 12px;flex:1}
+.mock-chart-lbl{font-size:8px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.mock-bars{display:flex;align-items:flex-end;gap:4px;height:56px}
+.mock-bar{flex:1;background:linear-gradient(180deg,rgba(109,93,252,.75),rgba(109,93,252,.25));border-radius:3px 3px 0 0;animation:barUp .8s var(--spring) forwards;transform-origin:bottom}
+@keyframes barUp{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.mock-ping{font-size:8px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:4px;margin-bottom:4px}
+.mock-ping::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Floating badges on mock */
+.mock-float{
+  position:absolute;background:var(--s1);border:1px solid var(--border);
+  border-radius:14px;padding:9px 13px;box-shadow:var(--sh-lg);
+  display:flex;align-items:center;gap:9px;white-space:nowrap;
+  opacity:0;
+}
+.mock-float-1{bottom:-18px;right:-18px;animation:floatIn .7s var(--spring) 1.2s forwards}
+.mock-float-2{top:-18px;left:-18px;animation:floatIn .7s var(--spring) 1.5s forwards}
+@keyframes floatIn{to{opacity:1}}
+.mf-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.mf-title{font-size:11px;font-weight:700;color:var(--text)}
+.mf-sub{font-size:10px;color:var(--t3);margin-top:1px}
+
+/* ══ PROBLEM ══ */
+.problem{padding:90px 0 110px;position:relative}
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:48px 0 18px}
+.problem-card{
+  background:var(--s1);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:24px 20px;display:flex;flex-direction:column;gap:16px;
+  transition:border-color .2s var(--ease),transform .2s var(--ease);
+}
+.problem-card:hover{border-color:rgba(239,68,68,.25);transform:translateY(-3px)}
+.problem-mark{
+  width:36px;height:36px;border-radius:10px;background:rgba(239,68,68,.12);
+  color:var(--red);display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:800;flex-shrink:0;
+}
+.problem-txt{font-size:13.5px;color:var(--t2);line-height:1.6;font-weight:500}
+.problem-solution{
+  display:flex;align-items:center;gap:22px;
+  background:linear-gradient(120deg,rgba(109,93,252,.16),rgba(79,140,255,.08));
+  border:1px solid rgba(109,93,252,.28);border-radius:var(--r-lg);
+  padding:30px 36px;box-shadow:var(--glow-pr);
+}
+.problem-solution-mark{
+  width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,var(--pr),var(--blue));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:24px;font-weight:900;flex-shrink:0;
+}
+.problem-solution-eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--pr);margin-bottom:5px}
+.problem-solution-txt{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.02em;line-height:1.4}
+@media(max-width:900px){.problem-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){
+  .problem-grid{grid-template-columns:1fr}
+  .problem-solution{flex-direction:column;text-align:center;padding:30px 24px;gap:16px}
+}
+
+/* ══ LOGOS BAND ══ */
+.logos-band{
+  padding:36px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--s1);
+}
+.logos-lbl{text-align:center;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:22px}
+.logos-row{display:flex;align-items:center;justify-content:center;gap:44px;flex-wrap:wrap}
+.logo-item{font-size:13.5px;font-weight:700;color:var(--t3);letter-spacing:-.02em;opacity:.5;transition:opacity .2s;font-family:var(--mono)}
+.logo-item:hover{opacity:.85}
+
+/* ══ EDITOR SECTION (IA + édition visuelle) ══ */
+.editor-section{padding:120px 0;background:var(--s1);border-top:1px solid var(--border)}
+.editor-inner{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.editor-content{}
+.editor-h2{font-size:clamp(26px,4vw,42px);font-weight:900;letter-spacing:-.05em;color:var(--text);line-height:1.08;margin-bottom:16px}
+.editor-sub{font-size:15px;color:var(--t2);line-height:1.75;margin-bottom:32px}
+.editor-points{display:flex;flex-direction:column;gap:14px}
+.editor-point{
+  display:flex;gap:14px;padding:16px 18px;
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r);
+  transition:all .2s var(--ease);
+}
+.editor-point:hover{border-color:rgba(109,93,252,.2);background:rgba(109,93,252,.02);transform:translateX(4px)}
+.ep-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px}
+.ep-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+.ep-desc{font-size:13px;color:var(--t2);line-height:1.55}
+
+/* Editor visual */
+.editor-visual{position:relative}
+.editor-mock{
+  background:var(--s1);border:1px solid var(--border);border-radius:var(--r-lg);
+  box-shadow:var(--sh-lg);overflow:hidden;
+}
+.em-top{
+  background:var(--bg);border-bottom:1px solid var(--border);
+  padding:10px 14px;display:flex;align-items:center;gap:8px;
+}
+.em-dot{width:8px;height:8px;border-radius:50%}
+.em-dot:nth-child(1){background:#ff5f57}
+.em-dot:nth-child(2){background:#febc2e}
+.em-dot:nth-child(3){background:#28c840}
+.em-toolbar{
+  display:flex;align-items:center;gap:6px;
+  background:#0F172A;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);
+}
+.em-tb-btn{
+  padding:5px 10px;border-radius:6px;font-size:10px;font-weight:600;
+  font-family:var(--mono);color:rgba(255,255,255,.6);background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);cursor:pointer;
+}
+.em-tb-btn.active{background:var(--pr);color:#fff;border-color:transparent}
+.em-tb-sep{width:1px;height:16px;background:rgba(255,255,255,.1)}
+.em-tb-ai{
+  margin-left:auto;padding:5px 12px;border-radius:6px;
+  background:linear-gradient(135deg,rgba(109,93,252,.8),rgba(139,92,246,.8));
+  color:#fff;font-size:10px;font-weight:700;font-family:var(--mono);
+  border:none;cursor:pointer;display:flex;align-items:center;gap:5px;
+}
+.em-site{
+  height:240px;background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%);
+  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+}
+.em-site-text{text-align:center;color:#fff;padding:20px}
+.em-site-h{font-size:22px;font-weight:800;letter-spacing:-.04em;margin-bottom:6px}
+.em-site-p{font-size:12px;color:rgba(255,255,255,.6);line-height:1.6}
+/* Editable highlight */
+.em-highlight{
+  position:absolute;top:40px;left:50%;transform:translateX(-50%);
+  border:2px solid var(--pr);border-radius:6px;padding:3px 8px;
+  background:rgba(109,93,252,.15);
+  font-size:10px;font-weight:700;color:#fff;
+  display:flex;align-items:center;gap:5px;white-space:nowrap;
+}
+.em-highlight::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--pr);animation:pulse 1.5s infinite}
+.em-ia-box{
+  background:var(--s1);border-top:1px solid var(--border);padding:14px;
+}
+.em-ia-row{display:flex;align-items:center;gap:10px}
+.em-ia-icon{
+  width:32px;height:32px;border-radius:9px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--pr),#7c3aed);
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+}
+.em-ia-input{
+  flex:1;font-size:12px;color:var(--t2);font-family:var(--mono);
+}
+.em-ia-send{
+  padding:6px 14px;background:var(--pr);color:#fff;border:none;
+  border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;
+  font-family:var(--font);white-space:nowrap;
+}
+/* Floating IA badge */
+.editor-float{
+  position:absolute;bottom:-16px;left:-20px;
+  background:linear-gradient(135deg,#0F172A,#1E293B);
+  border:1px solid rgba(109,93,252,.3);border-radius:14px;
+  padding:10px 14px;box-shadow:var(--sh-lg);
+  display:flex;align-items:center;gap:10px;white-space:nowrap;
+}
+.ef-icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--pr),#7c3aed);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ef-title{font-size:11px;font-weight:700;color:#fff}
+.ef-sub{font-size:10px;color:rgba(255,255,255,.5);margin-top:1px}
+
+/* ══ FEATURES ══ */
+.features{padding:120px 0}
+.section-hd{text-align:center;max-width:560px;margin:0 auto 64px}
+.section-h2{font-size:clamp(26px,4vw,42px);font-weight:900;letter-spacing:-.05em;color:var(--text);line-height:1.08;margin-bottom:14px}
+.section-sub{font-size:15px;color:var(--t2);line-height:1.7}
+.feats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.feat-card{
+  background:var(--s1);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:28px;transition:all .25s var(--ease);position:relative;overflow:hidden;
+}
+.feat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--pr),#a78bfa);opacity:0;transition:opacity .25s;
+}
+.feat-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:rgba(109,93,252,.15)}
+.feat-card:hover::before{opacity:1}
+.feat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:22px}
+.feat-h3{font-size:16px;font-weight:800;color:var(--text);margin-bottom:8px;letter-spacing:-.03em}
+.feat-p{font-size:13.5px;color:var(--t2);line-height:1.7}
+/* AI badge on feat cards */
+.feat-ai-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:9.5px;font-weight:700;color:var(--pr);
+  background:var(--pr-light);border:1px solid rgba(109,93,252,.2);
+  padding:2px 8px;border-radius:20px;margin-top:10px;
+}
+
+/* ══ WHY ══ */
+.why{padding:100px 0;background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.why-inner{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.why-list{display:flex;flex-direction:column;gap:14px;margin-top:32px}
+.why-item{
+  display:flex;gap:14px;padding:18px;
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r);
+  transition:all .2s var(--ease);
+}
+.why-item:hover{border-color:rgba(109,93,252,.2);background:rgba(109,93,252,.02);transform:translateX(4px)}
+.why-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px}
+.why-h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+.why-p{font-size:13px;color:var(--t2);line-height:1.55}
+.why-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.why-stat{
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:22px;text-align:center;transition:all .2s var(--ease);
+}
+.why-stat:hover{transform:scale(1.03);box-shadow:var(--sh-md)}
+.why-stat:first-child{
+  grid-column:1/-1;
+  background:linear-gradient(135deg,var(--pr),#4f46e5);border-color:transparent;
+}
+.why-stat:first-child .wss-val{color:#fff}
+.why-stat:first-child .wss-lbl{color:rgba(255,255,255,.65)}
+.wss-val{font-size:34px;font-weight:900;color:var(--text);letter-spacing:-.05em;line-height:1;margin-bottom:6px;font-family:var(--mono)}
+.wss-lbl{font-size:12px;color:var(--t3);font-weight:500}
+
+/* ══ SHOWCASE ══ */
+.showcase{padding:120px 0}
+.sc-tabs{
+  display:flex;justify-content:center;gap:4px;margin-bottom:44px;
+  background:var(--s1);border:1px solid var(--border);border-radius:20px;
+  padding:5px;width:fit-content;margin-left:auto;margin-right:auto;
+  box-shadow:var(--sh);
+}
+.sc-tab{
+  padding:8px 20px;font-size:13px;font-weight:600;color:var(--t2);
+  border-radius:14px;cursor:pointer;transition:all .2s;border:none;
+  background:transparent;font-family:var(--font);
+}
+.sc-tab.active{background:var(--pr);color:#fff;box-shadow:0 2px 8px rgba(109,93,252,.3)}
+.sc-screen{display:none}
+.sc-screen.active{display:block}
+.sc-inner{
+  background:var(--s1);border:1px solid var(--border);border-radius:var(--r-xl);
+  overflow:hidden;box-shadow:var(--sh-xl);
+}
+.sc-topbar{
+  background:rgba(255,255,255,.9);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);padding:12px 20px;
+  display:flex;align-items:center;gap:12px;border-radius:var(--r-xl) var(--r-xl) 0 0;
+}
+.sc-tb-title{font-size:14px;font-weight:700;color:var(--text);flex:1}
+.sc-body{background:var(--bg);padding:22px;min-height:360px;display:flex;flex-direction:column;gap:14px}
+.sc-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sc-kpi{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:16px 18px}
+.sc-kpi-lbl{font-size:9.5px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.sc-kpi-val{font-size:26px;font-weight:800;color:var(--text);letter-spacing:-.04em}
+.sc-kpi-sub{font-size:11px;color:var(--green);font-weight:600;margin-top:4px}
+.sc-chart{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:16px 18px;flex:1}
+.sc-bars{display:flex;align-items:flex-end;gap:5px;height:68px;margin-top:10px}
+.sc-bar{flex:1;background:linear-gradient(180deg,rgba(109,93,252,.7),rgba(109,93,252,.2));border-radius:4px 4px 0 0}
+.sc-table{background:var(--s1);border:1px solid var(--border);border-radius:16px;overflow:hidden;flex:1}
+.sc-thead{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em}
+.sc-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:12px 16px;border-bottom:1px solid var(--border);font-size:12.5px;color:var(--text);align-items:center;transition:background .12s}
+.sc-row:hover{background:rgba(109,93,252,.02)}
+.sc-row:last-child{border-bottom:none}
+.sc-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700}
+.sc-badge.ok{background:#dcfce7;color:#16a34a}
+.sc-badge.wait{background:#fef3c7;color:#b45309}
+/* Editor showcase */
+.sc-editor{background:var(--s1);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.sc-ed-top{background:#0F172A;padding:10px 14px;display:flex;align-items:center;gap:8px}
+.sc-ed-tb{padding:4px 10px;border-radius:5px;font-size:10px;font-weight:600;font-family:var(--mono);color:rgba(255,255,255,.5);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+.sc-ed-tb.on{background:var(--pr);color:#fff;border-color:transparent}
+.sc-ed-body{display:grid;grid-template-columns:1fr 1fr;min-height:220px}
+.sc-ed-preview{background:linear-gradient(135deg,#0F172A,#1E293B);padding:24px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative}
+.sc-ed-h{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.04em;margin-bottom:6px}
+.sc-ed-p{font-size:11px;color:rgba(255,255,255,.5);line-height:1.6}
+.sc-ed-cursor{
+  position:absolute;top:28px;left:50%;transform:translateX(-50%);
+  background:var(--pr);color:#fff;font-size:9px;font-weight:700;
+  padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;
+}
+.sc-ed-cursor::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.7);animation:pulse 1.5s infinite}
+.sc-ed-panel{background:var(--bg);border-left:1px solid var(--border);padding:14px;display:flex;flex-direction:column;gap:10px}
+.sc-ed-sec{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.sc-ed-field{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--t2)}
+.sc-ed-ai{
+  background:linear-gradient(135deg,rgba(109,93,252,.1),rgba(139,92,246,.08));
+  border:1px solid rgba(109,93,252,.2);border-radius:10px;padding:10px;
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+}
+.sc-ed-ai-icon{font-size:16px}
+.sc-ed-ai-txt{font-size:11px;font-weight:600;color:var(--pr)}
+.sc-ed-ai-sub{font-size:10px;color:var(--t3);margin-top:1px}
+
+
+
+/* ══ PERSONNALISATION ══ */
+.personalize{padding:100px 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.personalize-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:52px}
+.pz-card{display:flex;flex-direction:column;gap:16px}
+.pz-frame{
+  border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--border);
+  box-shadow:var(--sh-lg);transition:transform .35s var(--ease),box-shadow .35s var(--ease);
+  background:#fff;
+}
+.pz-card:hover .pz-frame{transform:translateY(-6px);box-shadow:var(--sh-xl)}
+.pz-bar{height:28px;display:flex;align-items:center;gap:6px;padding:0 12px;background:#fff;border-bottom:1px solid rgba(15,23,42,.06)}
+.pz-bar span{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.pz-bar span:nth-child(1){background:#ff5f57}
+.pz-bar span:nth-child(2){background:#febc2e}
+.pz-bar span:nth-child(3){background:#28c840}
+.pz-url{flex:1;text-align:center;font-size:9px;color:#94a3b8;font-family:var(--mono)}
+.pz-label-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.pz-label-sub{font-size:12.5px;color:var(--t2);line-height:1.55}
+
+/* Navbar du mini-site */
+.pz-nav{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 14px;height:46px}
+.pz-nav-logo{font-size:11px;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0}
+.pz-nav-links{display:flex;gap:10px;font-size:9px;font-weight:600;flex-shrink:0;white-space:nowrap}
+.pz-nav-cta{font-size:9.5px;font-weight:700;padding:7px 12px;border-radius:8px;white-space:nowrap;flex-shrink:0}
+
+/* Hero plein écran avec le plat */
+.pz-hero{position:relative;height:236px;overflow:hidden}
+.pz-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)}
+.pz-card:hover .pz-photo{transform:scale(1.07)}
+.pz-hero-overlay{position:absolute;inset:0}
+.pz-hero-content{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 20px;z-index:1}
+.pz-hero-eyebrow{font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;margin-bottom:9px}
+.pz-hero-title{font-size:25px;font-weight:900;letter-spacing:-.03em;margin-bottom:8px;line-height:1.1}
+.pz-hero-sub{font-size:11px;max-width:215px;line-height:1.55;margin-bottom:16px}
+.pz-hero-btn{font-size:10.5px;font-weight:700;padding:9px 20px;border-radius:10px}
+
+/* Section de contenu sous le hero */
+.pz-section{padding:18px 18px 20px;display:flex;flex-direction:column;gap:10px}
+.pz-section-title{font-size:9.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.pz-section-text{font-size:11.5px;line-height:1.6}
+.pz-section-row{display:flex;gap:8px;flex-wrap:wrap}
+.pz-chip{font-size:9.5px;font-weight:700;padding:5px 10px;border-radius:7px}
+
+/* ── Variante 1 — Futuriste & Premium : "Restaurant gastronomique innovant" ── */
+.pz-futur{background:#0A0E1A}
+.pz-futur .pz-bar{background:#0A0E1A;border-bottom:1px solid rgba(255,255,255,.08)}
+.pz-futur .pz-bar span{opacity:.45}
+.pz-futur .pz-url{color:rgba(255,255,255,.4)}
+.pz-futur .pz-nav{background:rgba(255,255,255,.04);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
+.pz-futur .pz-nav-logo{color:#fff}
+.pz-futur .pz-nav-links{color:rgba(255,255,255,.55)}
+.pz-futur .pz-nav-cta{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.26);color:#fff;backdrop-filter:blur(6px)}
+.pz-futur .pz-hero-overlay{background:linear-gradient(180deg,rgba(10,14,26,.05) 0%,rgba(10,14,26,.4) 55%,rgba(10,14,26,.94) 100%)}
+.pz-futur .pz-hero-eyebrow{color:rgba(255,255,255,.7)}
+.pz-futur .pz-hero-title{color:#fff;text-shadow:0 2px 24px rgba(0,0,0,.55)}
+.pz-futur .pz-hero-sub{color:rgba(255,255,255,.65)}
+.pz-futur .pz-hero-btn{background:#fff;color:#0A0E1A;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.pz-futur .pz-section{background:#0A0E1A}
+.pz-futur .pz-section-title{color:rgba(255,255,255,.8)}
+.pz-futur .pz-section-text{color:rgba(255,255,255,.55)}
+.pz-futur .pz-chip{background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.14)}
+/* Diaporama en boucle : 3 photos, fondu + zoom continu (Ken Burns) */
+.pz-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;filter:saturate(1.05) contrast(1.05);animation:pzSlideFade 13.5s infinite linear,pzSlideZoom 13.5s infinite linear}
+.pz-slide:nth-child(1){animation-delay:0s}
+.pz-slide:nth-child(2){animation-delay:-4.5s}
+.pz-slide:nth-child(3){animation-delay:-9s}
+@keyframes pzSlideFade{0%{opacity:0}4%{opacity:1}30%{opacity:1}37%{opacity:0}100%{opacity:0}}
+@keyframes pzSlideZoom{0%{transform:scale(1)}100%{transform:scale(1.16)}}
+
+/* ── Variante 2 — Authentique & Chaleureux : "Restaurant familial haut de gamme" ── */
+.pz-warm{background:#FBF3E9}
+.pz-warm .pz-bar{background:#FBF3E9}
+.pz-warm .pz-nav{background:#F3E2D0;border-bottom:1px solid rgba(62,42,30,.08)}
+.pz-warm .pz-nav-logo{color:#3E2A1E;font-family:Georgia,serif;font-style:italic}
+.pz-warm .pz-nav-links{color:#8A6A57}
+.pz-warm .pz-nav-cta{background:#C2703D;color:#fff}
+.pz-warm .pz-photo{filter:sepia(.35) saturate(1.15) brightness(.98)}
+.pz-warm .pz-hero-overlay{background:linear-gradient(180deg,rgba(62,42,30,.05) 0%,rgba(62,42,30,.35) 60%,rgba(62,42,30,.72) 100%)}
+.pz-warm .pz-hero-eyebrow{color:#F6E2C9}
+.pz-warm .pz-hero-title{color:#fff;font-family:Georgia,serif;font-style:italic;font-weight:700}
+.pz-warm .pz-hero-sub{color:rgba(255,255,255,.85)}
+.pz-warm .pz-hero-btn{background:#C2703D;color:#fff}
+.pz-warm .pz-section{background:#FBF3E9}
+.pz-warm .pz-section-title{color:#C2703D}
+.pz-warm .pz-section-text{color:#7A5C4B}
+.pz-warm .pz-chip{background:#F3E2D0;color:#7A5C4B}
+
+/* ── Variante 3 — Minimaliste & Luxe : "Établissement exclusif" ── */
+.pz-mini{background:#fff}
+.pz-mini .pz-nav{border-bottom:1px solid #EEF1F5}
+.pz-mini .pz-nav-logo{color:#0F172A;letter-spacing:.04em}
+.pz-mini .pz-nav-links{color:#94A3B8}
+.pz-mini .pz-nav-cta{background:transparent;color:#0F172A;border:1px solid #0F172A}
+.pz-mini .pz-photo{filter:grayscale(1) contrast(1.08)}
+.pz-mini .pz-hero-overlay{background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.25) 55%,rgba(0,0,0,.6) 100%)}
+.pz-mini .pz-hero-eyebrow{color:rgba(255,255,255,.75);letter-spacing:.28em}
+.pz-mini .pz-hero-title{color:#fff;letter-spacing:.05em;font-weight:800}
+.pz-mini .pz-hero-sub{color:rgba(255,255,255,.7)}
+.pz-mini .pz-hero-btn{background:#fff;color:#0F172A}
+.pz-mini .pz-section{background:#fff}
+.pz-mini .pz-section-title{color:#94A3B8;letter-spacing:.22em}
+.pz-mini .pz-section-text{color:#475569}
+
+@media(max-width:900px){.personalize-grid{grid-template-columns:1fr;max-width:380px;margin:52px auto 0}}
+
+.reviews{padding:100px 0;background:var(--bg);border-top:1px solid var(--border)}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
+.review-card{
+  background:var(--s1);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:26px;box-shadow:var(--sh);transition:all .2s var(--ease);
+}
+.review-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
+.review-stars{display:flex;gap:3px;margin-bottom:14px}
+.review-star{width:14px;height:14px;color:#F59E0B;fill:#F59E0B}
+.review-text{font-size:14px;color:var(--text);line-height:1.7;margin-bottom:18px;font-style:italic}
+.review-author{display:flex;align-items:center;gap:10px}
+.review-ava{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:#fff;flex-shrink:0;
+}
+.review-name{font-size:13px;font-weight:700;color:var(--text)}
+.review-role{font-size:11.5px;color:var(--t3);margin-top:1px}
+.reviews-cta{
+  text-align:center;margin-top:48px;
+  padding:32px;background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r-lg);box-shadow:var(--sh);
+}
+.reviews-cta-title{font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.04em;margin-bottom:8px}
+.reviews-cta-sub{font-size:14px;color:var(--t2);margin-bottom:22px}
+@media(max-width:900px){.reviews-grid{grid-template-columns:1fr}}
+
+/* ══ CONTACT ══ */
+.contact{padding:120px 0;background:var(--s1);border-top:1px solid var(--border)}
+.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+.contact-info{margin-top:28px;display:flex;flex-direction:column;gap:14px}
+.contact-item{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--t2)}
+.contact-icon{width:34px;height:34px;background:var(--pr-light);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--pr)}
+.cf-wrap{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-xl);padding:34px;box-shadow:var(--sh-md)}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cf-group{margin-bottom:16px}
+.cf-lbl{display:block;font-size:12px;font-weight:700;color:var(--t2);margin-bottom:6px}
+.cf-inp,.cf-ta{
+  width:100%;background:var(--s1);border:1.5px solid var(--border2);border-radius:12px;
+  padding:10px 14px;font-size:13.5px;font-family:var(--font);color:var(--text);outline:none;
+  transition:all .18s;
+}
+.cf-inp::placeholder,.cf-ta::placeholder{color:var(--t3)}
+.cf-inp:focus,.cf-ta:focus{border-color:var(--pr);box-shadow:0 0 0 3px rgba(109,93,252,.1)}
+.cf-ta{resize:vertical;min-height:110px;line-height:1.6}
+.cf-submit{
+  width:100%;padding:14px;background:var(--pr);color:#fff;border:none;
+  border-radius:14px;font-family:var(--font);font-size:14px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 16px rgba(109,93,252,.3);transition:all .2s var(--spring);margin-top:4px;
+}
+.cf-submit:hover{background:var(--pr2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(109,93,252,.4)}
+.cf-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.cf-ok{display:none;text-align:center;padding:24px;flex-direction:column;align-items:center;gap:12px}
+.cf-ok.show{display:flex}
+.cf-ok-icon{width:52px;height:52px;background:rgba(34,197,94,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
+.cf-ok-title{font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.03em}
+.cf-ok-sub{font-size:13.5px;color:var(--t2)}
+
+/* ══ CTA BLOCK ══ */
+.cta-block{padding:120px 0;position:relative;overflow:hidden}
+.cta-block::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#0F172A 0%,#1E293B 50%,#312E81 100%)}
+.cta-block::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(109,93,252,.28) 0%,transparent 70%);pointer-events:none}
+.cta-inner{position:relative;z-index:1;text-align:center;max-width:620px;margin:0 auto}
+.cta-h2{font-size:clamp(28px,5vw,52px);font-weight:900;color:#fff;letter-spacing:-.06em;line-height:1.04;margin-bottom:16px}
+.cta-sub{font-size:16px;color:rgba(255,255,255,.62);line-height:1.7;margin-bottom:36px}
+.cta-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn-white{
+  padding:14px 28px;font-size:14px;font-weight:700;color:var(--text);
+  background:#fff;border:none;border-radius:14px;cursor:pointer;
+  font-family:var(--font);text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+  box-shadow:0 4px 20px rgba(0,0,0,.2);transition:all .2s var(--spring);
+}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.btn-outline-w{
+  padding:14px 24px;font-size:14px;font-weight:600;
+  color:rgba(255,255,255,.8);background:rgba(255,255,255,.1);
+  border:1.5px solid rgba(255,255,255,.25);border-radius:14px;
+  cursor:pointer;font-family:var(--font);text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;transition:all .18s;
+}
+.btn-outline-w:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.45);color:#fff}
+
+/* ══ FOOTER ══ */
+.footer{background:var(--s1);border-top:1px solid var(--border);padding:44px 0 28px}
+.footer-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:36px;flex-wrap:wrap;padding-bottom:28px;border-bottom:1px solid var(--border);margin-bottom:20px}
+.footer-tagline{font-size:13px;color:var(--t3);margin-top:8px;max-width:190px;line-height:1.6}
+.footer-links{display:flex;gap:56px}
+.footer-col-title{font-size:11.5px;font-weight:700;color:var(--text);letter-spacing:.04em;text-transform:uppercase;margin-bottom:13px}
+.footer-col-links{display:flex;flex-direction:column;gap:8px}
+.footer-col-link{font-size:13px;color:var(--t2);text-decoration:none;transition:color .14s}
+.footer-col-link:hover{color:var(--pr)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.footer-copy{font-size:12px;color:var(--t3)}
+
+/* ══════════════════════════════════════
+   AUTH OVERLAY (modal de connexion)
+══════════════════════════════════════ */
+.auth-overlay{
+  position:fixed;inset:0;z-index:9000;
+  display:none;align-items:center;justify-content:center;padding:24px;
+  background:rgba(15,23,42,.5);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+}
+.auth-overlay.open{display:flex;animation:aoFade .25s var(--ease)}
+@keyframes aoFade{from{opacity:0}to{opacity:1}}
+
+.auth-card{
+  background:var(--s1);border:1px solid var(--border);border-radius:var(--r-xl);
+  width:100%;max-width:440px;
+  box-shadow:var(--sh-xl);
+  animation:acUp .3s var(--spring);
+  overflow:hidden;
+}
+@keyframes acUp{from{opacity:0;transform:scale(.95) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+.auth-header{
+  padding:28px 32px 0;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.auth-logo{display:flex;align-items:center;gap:9px}
+.auth-logo-mark{
+  width:28px;height:28px;background:var(--pr);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(109,93,252,.3);
+}
+.auth-logo-mark svg{width:12px;height:12px}
+.auth-logo-name{font-size:15px;font-weight:900;letter-spacing:-.05em;color:var(--text)}
+.auth-close{
+  width:30px;height:30px;border-radius:9px;border:1.5px solid var(--border2);
+  background:transparent;cursor:pointer;color:var(--t2);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;font-size:16px;
+}
+.auth-close:hover{background:var(--bg);color:var(--text)}
+
+.auth-body{padding:28px 32px 32px}
+
+/* Steps */
+.auth-step{display:none}
+.auth-step.on{display:block;animation:stepFade .3s var(--ease)}
+@keyframes stepFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.auth-tag{
+  font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--pr);display:flex;align-items:center;gap:6px;margin-bottom:10px;
+}
+.auth-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--pr)}
+.auth-title{font-size:22px;font-weight:900;letter-spacing:-.05em;color:var(--text);margin-bottom:6px}
+.auth-sub{font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:22px}
+.auth-sub strong{color:var(--text);font-weight:700}
+
+/* Error */
+.auth-err{
+  background:#fef2f2;border:1px solid #fecaca;border-radius:var(--r);
+  padding:10px 13px;font-size:12.5px;color:#dc2626;
+  margin-bottom:14px;display:none;align-items:center;gap:8px;
+}
+.auth-err.on{display:flex}
+.auth-err svg{width:13px;height:13px;flex-shrink:0}
+.auth-ok{
+  background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--r);
+  padding:10px 13px;font-size:12.5px;color:#16a34a;
+  margin-bottom:14px;display:none;align-items:center;gap:8px;
+}
+.auth-ok.on{display:flex}
+
+/* Field */
+.auth-field{margin-bottom:14px}
+.auth-lbl{display:block;font-size:11.5px;font-weight:700;color:var(--t2);margin-bottom:6px}
+.auth-input-wrap{position:relative;display:flex;align-items:center}
+.auth-inp-ico{position:absolute;left:12px;color:var(--t3);pointer-events:none;display:flex;align-items:center;transition:color .18s}
+.auth-inp-ico svg{width:14px;height:14px}
+.auth-input-wrap:focus-within .auth-inp-ico{color:var(--pr)}
+.auth-inp{
+  width:100%;background:var(--s1);border:1.5px solid var(--border2);border-radius:var(--r);
+  padding:11px 14px 11px 40px;font-size:14px;font-family:var(--font);
+  color:var(--text);outline:none;transition:all .18s;
+}
+.auth-inp::placeholder{color:var(--t3)}
+.auth-inp:focus{border-color:var(--pr);box-shadow:0 0 0 3px rgba(109,93,252,.1)}
+
+/* OTP boxes */
+.auth-otp-wrap{display:flex;gap:9px;justify-content:center;margin:4px 0 20px}
+.auth-otp-inp{
+  width:50px;height:58px;border:1.5px solid var(--border2);border-radius:12px;
+  text-align:center;font-size:22px;font-weight:800;font-family:var(--mono);
+  color:var(--text);background:var(--s1);outline:none;
+  transition:all .18s var(--ease);caret-color:var(--pr);
+}
+.auth-otp-inp:focus{border-color:var(--pr);box-shadow:0 0 0 3px rgba(109,93,252,.1);transform:scale(1.05)}
+.auth-otp-inp.filled{border-color:var(--pr);background:rgba(109,93,252,.06)}
+.auth-otp-inp.shake{border-color:var(--red);box-shadow:0 0 0 3px rgba(239,68,68,.1);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* CTA */
+.auth-cta{
+  width:100%;padding:13px;background:var(--pr);color:#fff;
+  border:none;border-radius:14px;font-family:var(--font);font-size:14px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 2px 12px rgba(109,93,252,.3);transition:all .2s var(--ease);
+}
+.auth-cta:hover{background:var(--pr2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(109,93,252,.4)}
+.auth-cta:active{transform:none}
+.auth-cta:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.auth-spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:rot .65s linear infinite;display:none}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* Back */
+.auth-back{
+  display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--t2);
+  font-weight:600;cursor:pointer;border:none;background:none;font-family:var(--font);
+  margin-bottom:18px;padding:0;transition:color .15s;
+}
+.auth-back:hover{color:var(--text)}
+.auth-back svg{width:13px;height:13px}
+
+/* Timer */
+.auth-timer{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--t3);margin-top:14px}
+.auth-resend{font-size:12.5px;font-weight:700;color:var(--pr);cursor:pointer;border:none;background:none;font-family:var(--font);padding:0;transition:opacity .15s}
+.auth-resend:disabled{color:var(--t3);cursor:not-allowed}
+
+/* Trust */
+.auth-trust{
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  font-size:11px;color:var(--t3);
+}
+.auth-trust svg{width:10px;height:10px}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  .hero-inner,.editor-inner,.why-inner,.contact-inner{grid-template-columns:1fr}
+  .hero-visual,.editor-visual{display:none}
+  .hero{padding:110px 0 72px}
+  .feats-grid{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+  .nav-hamburger{display:flex}
+  .nav-inner{gap:10px}
+  #nav-spacer{display:flex !important;flex:1}
+  /* Cacher le bouton Démo dans la nav sur mobile — il est dans le drawer */
+  .nav-btn-demo{display:none}
+}
+@media(max-width:640px){
+  .feats-grid{grid-template-columns:1fr}
+  .cf-row{grid-template-columns:1fr}
+  .why-stats{grid-template-columns:1fr 1fr}
+  .why-stat:first-child{grid-column:auto}
+  .footer-links{flex-direction:column;gap:20px}
+  .footer-inner{flex-direction:column}
+  .auth-card{border-radius:22px}
+  .auth-body{padding:22px 22px 26px}
+  .auth-otp-inp{width:42px;height:50px;font-size:18px}
+  .sc-kpis{grid-template-columns:1fr 1fr}
+  #sct-dashboard .sc-inner{grid-template-columns:1fr !important}
+  #sct-dashboard .sc-inner > div:first-child{display:none !important}
+  #sct-editeur .sc-inner{grid-template-columns:1fr !important}
+  #sct-editeur .sc-inner > div:first-child{display:none !important}
+  .auth-inp{font-size:16px}
+  nav{padding:0 14px}
+  .nav-actions{gap:6px}
+  .btn-pr{padding:8px 13px;font-size:12.5px;white-space:nowrap}
+  .hero{padding:88px 0 52px}
+  .hero-title{font-size:clamp(30px,8.5vw,52px)}
+  .hero-sub{font-size:14.5px}
+  .hero-cta{flex-direction:column;align-items:stretch;gap:10px}
+  .hero-cta .btn-pr,.hero-cta .btn-ghost{justify-content:center;text-align:center}
+  .container{padding:0 18px}
+}
+@media(max-width:420px){
+  nav{padding:0 12px}
+  .nav-logo-name{font-size:14px}
+  .btn-ghost{padding:7px 10px;font-size:12px}
+  .btn-pr{padding:8px 11px;font-size:11.5px}
+  .nav-inner{height:56px}
+}
+
+/* ═══════════════════════════════════════════════
+   LOKSITE — Nouveau Hero (écosystème glass)
+═══════════════════════════════════════════════ */
+.lk-hero{
+  position:relative;min-height:100vh;min-height:100svh;
+  display:flex;align-items:center;
+  padding:110px 0 60px;overflow:hidden;
+  background:
+    radial-gradient(ellipse 60% 50% at 82% 10%,rgba(109,93,252,.20),transparent 60%),
+    radial-gradient(ellipse 45% 40% at 5% 95%,rgba(79,140,255,.09),transparent 60%);
+}
+.lk-hero>.container{width:100%}
+.lk-hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(109,93,252,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(109,93,252,.05) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 15%,black,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 15%,black,transparent 75%);
+  pointer-events:none;
+}
+.lk-hero-inner{
+  position:relative;z-index:1;
+  display:grid;
+  grid-template-columns:1.02fr .98fr;
+  grid-template-areas:"top scene" "bottom scene";
+  column-gap:4vw;row-gap:0;align-items:center;
+}
+.lk-hero-top{grid-area:top}
+.lk-hero-bottom{grid-area:bottom}
+.lk-scene-wrap{grid-area:scene}
+.lk-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--pr);
+  opacity:0;animation:lkRise .8s cubic-bezier(.16,1,.3,1) .05s forwards;
+}
+.lk-pulse-dot{position:relative;width:7px;height:7px;border-radius:50%;background:var(--pr);flex-shrink:0}
+.lk-pulse-dot::after{
+  content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid var(--pr);opacity:.6;
+  animation:lkPulseRing 2.2s ease-out infinite;
+}
+@keyframes lkPulseRing{0%{transform:scale(.6);opacity:.7}100%{transform:scale(2.1);opacity:0}}
+.lk-h1{
+  font-weight:800;font-size:clamp(2.1rem,3.4vw,3.4rem);line-height:1.1;letter-spacing:-.03em;
+  margin:20px 0 20px;color:var(--text);
+  opacity:0;animation:lkRise .8s cubic-bezier(.16,1,.3,1) .15s forwards;
+}
+.lk-h1 .lk-grad{
+  background:linear-gradient(135deg,var(--pr) 0%,#a78bfa 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.lk-sub{
+  font-size:clamp(1rem,1.1vw,1.1rem);line-height:1.7;color:var(--t2);max-width:490px;margin-bottom:32px;
+  opacity:0;animation:lkRise .8s cubic-bezier(.16,1,.3,1) .25s forwards;
+}
+.lk-ctas{
+  display:flex;gap:14px;flex-wrap:wrap;
+  opacity:0;animation:lkRise .8s cubic-bezier(.16,1,.3,1) .35s forwards;
+}
+.lk-btn{
+  font-family:var(--font);font-size:14.5px;font-weight:700;padding:15px 26px;border-radius:14px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:9px;border:none;text-decoration:none;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s ease,background .3s ease;
+}
+.lk-btn-primary{background:var(--pr);color:#fff;box-shadow:0 4px 20px rgba(109,93,252,.35)}
+.lk-btn-primary:hover{background:var(--pr2);transform:translateY(-2px);box-shadow:0 10px 32px rgba(109,93,252,.48)}
+.lk-btn-primary svg{transition:transform .3s ease}
+.lk-btn-primary:hover svg{transform:translateX(3px)}
+.lk-btn-secondary{background:transparent;color:var(--t2);border:1.5px solid var(--border2)}
+.lk-btn-secondary:hover{color:var(--text);border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.03);transform:translateY(-2px)}
+
+.lk-scene-wrap{position:relative;display:flex;align-items:center;justify-content:center;perspective:1400px}
+.lk-scene{position:relative;width:min(560px,100%);aspect-ratio:1/1;transform-style:preserve-3d;transition:transform .2s ease-out}
+.lk-scene svg.lk-connectors{position:absolute;inset:0;width:100%;height:100%;overflow:visible;opacity:0;animation:lkFade 1s ease 1s forwards}
+.lk-connector{stroke:url(#lkLineGrad);stroke-width:.28;fill:none;stroke-dasharray:2.2 2.6;filter:url(#lkSoftGlow);animation:lkFlow 2.6s linear infinite}
+.lk-card{
+  position:absolute;transform:translate(-50%,-50%);
+  background:linear-gradient(155deg,rgba(255,255,255,.09),rgba(255,255,255,.015) 60%);
+  border:1px solid rgba(255,255,255,.13);border-radius:16px;
+  backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);
+  box-shadow:0 24px 48px -12px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.14);
+  padding:13px 16px;display:flex;align-items:center;gap:10px;white-space:nowrap;
+  opacity:0;animation:lkCardIn .9s cubic-bezier(.16,1,.3,1) forwards,lkFloaty 6s ease-in-out infinite;
+}
+.lk-card .lk-ic{
+  width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(140deg,rgba(109,93,252,.35),rgba(109,93,252,.08));
+  border:1px solid rgba(255,255,255,.14);flex-shrink:0;
+}
+.lk-card .lk-ic svg{width:15px;height:15px;color:#c3b8ef}
+.lk-card .lk-label{font-size:12.5px;font-weight:700;color:#f1f0f7;letter-spacing:-.01em}
+.lk-card.lk-hub{
+  padding:22px 30px;border-radius:20px;
+  background:linear-gradient(155deg,rgba(109,93,252,.28),rgba(255,255,255,.03) 65%);
+  border:1px solid rgba(180,160,255,.4);
+  box-shadow:0 30px 70px -14px rgba(109,93,252,.55),inset 0 1px 0 rgba(255,255,255,.28);
+  animation:lkCardIn .9s cubic-bezier(.16,1,.3,1) forwards,lkFloatyHub 7s ease-in-out infinite;
+  z-index:5;
+}
+.lk-card.lk-hub .lk-ic{width:40px;height:40px;border-radius:12px;background:linear-gradient(140deg,#a78bfa,var(--pr2))}
+.lk-card.lk-hub .lk-ic svg{width:20px;height:20px;color:#fff}
+.lk-card.lk-hub .lk-label{font-size:15px}
+.lk-card.lk-hub .lk-sub-label{font-size:11px;color:#c3b8ef;font-weight:600;margin-top:1px}
+.lk-card.lk-hub .lk-txt{display:flex;flex-direction:column}
+
+@keyframes lkRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes lkFade{to{opacity:1}}
+@keyframes lkCardIn{from{opacity:0;transform:translate(-50%,-50%) scale(.7)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes lkFloaty{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-10px)}}
+@keyframes lkFloatyHub{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-7px)}}
+@keyframes lkFlow{to{stroke-dashoffset:-19}}
+
+.lk-pos-c{left:50%;top:50%}
+.lk-pos-r{left:88%;top:50%}
+.lk-pos-br{left:76.9%;top:74%}
+.lk-pos-b{left:50%;top:84%}
+.lk-pos-bl{left:23.1%;top:74%}
+.lk-pos-l{left:12%;top:50%}
+.lk-pos-tl{left:23.1%;top:26%}
+.lk-pos-t{left:50%;top:16%}
+.lk-pos-tr{left:76.9%;top:26%}
+
+@media(max-width:980px){
+  .lk-hero{padding:96px 0 40px}
+  .lk-hero-inner{
+    grid-template-columns:1fr;
+    grid-template-areas:"top" "scene" "bottom";
+    gap:28px;
+  }
+  .lk-scene{width:min(400px,calc(100vw - 64px))}
+  svg.lk-connectors{display:none}
+  .lk-pos-r{left:88%;top:50%}
+  .lk-pos-br{left:79%;top:78%}
+  .lk-pos-b{left:50%;top:90%}
+  .lk-pos-bl{left:21%;top:78%}
+  .lk-pos-l{left:12%;top:50%}
+  .lk-pos-tl{left:21%;top:22%}
+  .lk-pos-t{left:50%;top:10%}
+  .lk-pos-tr{left:79%;top:22%}
+}
+@media(max-width:480px){
+  .lk-card{padding:7px 10px}
+  .lk-card .lk-ic{width:22px;height:22px;border-radius:6px}
+  .lk-card .lk-ic svg{width:11px;height:11px}
+  .lk-card .lk-label{font-size:10px}
+  .lk-card.lk-hub{padding:12px 15px}
+  .lk-card.lk-hub .lk-ic{width:30px;height:30px}
+  .lk-card.lk-hub .lk-label{font-size:12.5px}
+  .lk-card.lk-hub .lk-sub-label{font-size:9.5px}
+  .lk-scene{width:min(360px,calc(100vw - 56px))}
+}
+@media(prefers-reduced-motion:reduce){
+  .lk-eyebrow,.lk-h1,.lk-sub,.lk-ctas,.lk-card,svg.lk-connectors{opacity:1;animation:none}
+}
+
+/* ═══════════════════════════════════════════════
+   LOKSITE — Fonctionnalités, refonte bento
+═══════════════════════════════════════════════ */
+.lk-feats-flagship{
+  display:grid;grid-template-columns:1.15fr 1fr;gap:0;
+  background:linear-gradient(135deg,rgba(109,93,252,.12),rgba(109,93,252,.02));
+  border:1px solid rgba(109,93,252,.25);border-radius:var(--r-xl);
+  overflow:hidden;margin-bottom:18px;
+}
+.lk-feats-flagship-txt{padding:44px 40px}
+.lk-feats-flagship .feat-ai-badge{margin-top:16px}
+.lk-flagship-h3{font-size:24px;font-weight:900;letter-spacing:-.03em;color:var(--text);margin:14px 0 10px;line-height:1.2}
+.lk-flagship-p{font-size:14.5px;color:var(--t2);line-height:1.65;max-width:400px}
+.lk-feats-flagship-demo{
+  position:relative;background:rgba(0,0,0,.15);border-left:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;padding:36px;min-height:220px;
+}
+.lk-chat-bubble{
+  background:var(--s1);border:1px solid var(--border2);border-radius:14px 14px 14px 4px;
+  padding:12px 16px;font-size:13px;color:var(--text);font-weight:600;max-width:260px;
+  box-shadow:var(--sh-md);margin-bottom:12px;
+}
+.lk-chat-reply{
+  display:flex;align-items:center;gap:8px;background:rgba(34,197,94,.12);
+  border:1px solid rgba(34,197,94,.3);border-radius:14px 14px 4px 14px;
+  padding:10px 16px;font-size:12.5px;font-weight:700;color:var(--green);
+  margin-left:auto;max-width:230px;
+}
+.lk-feats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.lk-feat-card{
+  background:var(--s1);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:22px;transition:all .25s var(--ease);position:relative;overflow:hidden;
+}
+.lk-feat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--pr),#a78bfa);opacity:0;transition:opacity .25s;
+}
+.lk-feat-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:rgba(109,93,252,.15)}
+.lk-feat-card:hover::before{opacity:1}
+.lk-feat-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.lk-feat-h4{font-size:14.5px;font-weight:800;color:var(--text);margin-bottom:5px;letter-spacing:-.02em}
+.lk-feat-line{font-size:12.5px;color:var(--t3);line-height:1.5}
+.lk-feats-grid-3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:900px){
+  .lk-feats-flagship{grid-template-columns:1fr}
+  .lk-feats-flagship-demo{display:none}
+  .lk-feats-grid{grid-template-columns:repeat(2,1fr)}
+  .lk-feats-grid-3{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .lk-feats-grid{grid-template-columns:1fr}
+  .lk-feats-grid-3{grid-template-columns:1fr}
+  .lk-feats-flagship-txt{padding:30px 24px}
+  .lk-feat-card{padding:16px}
+  .lk-feat-icon{width:34px;height:34px;margin-bottom:10px}
+  .lk-feat-h4{font-size:13.5px}
+  .lk-feat-line{font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ AUTH OVERLAY ══ -->
+<div class="auth-overlay" id="auth-overlay" onclick="overlayClose(event)">
+  <div class="auth-card" id="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <div class="auth-logo-mark" style="overflow:visible;background:none;border-radius:0;box-shadow:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center">
+          <svg width="28" height="28" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="22" fill="#6D5DFC"/>
+            <rect x="18" y="18" width="16" height="56" rx="4" fill="rgba(210,205,255,0.92)"/>
+            <rect x="18" y="58" width="46" height="16" rx="4" fill="rgba(210,205,255,0.92)"/>
+            <rect x="48" y="18" width="34" height="34" rx="7" fill="rgba(210,205,255,0.75)"/>
+            <path d="M65 26 L66.5 31.5 L72 33 L66.5 34.5 L65 40 L63.5 34.5 L58 33 L63.5 31.5 Z" fill="#6D5DFC" opacity="0.9"/>
+          </svg>
+        </div>
+        <div class="auth-logo-name">Loksite</div>
+      </div>
+      <button class="auth-close" onclick="closeAuth()">✕</button>
+    </div>
+    <div class="auth-body">
+
+      <!-- STEP 1 : Email + Mot de passe -->
+      <div class="auth-step on" id="auth-step-1">
+        <div class="auth-tag">Connexion sécurisée</div>
+        <div class="auth-title">Accédez à votre espace</div>
+        <div class="auth-sub">Entrez vos identifiants pour accéder à votre espace.</div>
+
+        <div class="auth-err" id="ae1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="ae1-msg"></span>
+        </div>
+
+        <div class="auth-field">
+          <label class="auth-lbl">Adresse email</label>
+          <div class="auth-input-wrap">
+            <div class="auth-inp-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <input class="auth-inp" type="email" id="auth-email" placeholder="vous@exemple.fr" autocomplete="email">
+          </div>
+        </div>
+
+        <div class="auth-field" style="margin-bottom:20px">
+          <label class="auth-lbl">Mot de passe</label>
+          <div class="auth-input-wrap">
+            <div class="auth-inp-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+            <input class="auth-inp" type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password" style="padding-right:42px">
+            <button type="button" id="auth-eye" onclick="authTogglePass()" style="position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--t3);padding:4px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:all .15s" onmouseenter="this.style.color='var(--pr)'" onmouseleave="this.style.color='var(--t3)'">
+              <svg id="auth-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="15" height="15"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              <svg id="auth-eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="15" height="15" style="display:none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button class="auth-cta" id="auth-btn-send" onclick="authLogin()">
+          <span id="auth-send-lbl">Se connecter</span>
+          <div class="auth-spin" id="auth-spin-1"></div>
+          <svg id="auth-send-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+
+        <div class="auth-trust" style="margin-top:18px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Connexion sécurisée · Chiffrement SSL
+        </div>
+      </div>
+
+      <!-- STEP 2 : OTP -->
+      <div class="auth-step" id="auth-step-2">
+        <button class="auth-back" onclick="authGoBack()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          Changer d'identifiants
+        </button>
+
+        <div class="auth-tag">Code de vérification</div>
+        <div class="auth-title">Vérifiez votre email</div>
+        <div class="auth-sub">Code envoyé à <strong id="auth-email-display"></strong></div>
+
+        <div class="auth-err" id="ae2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="ae2-msg"></span>
+        </div>
+        <div class="auth-ok" id="ao2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Nouveau code envoyé !</span>
+        </div>
+
+        <div class="auth-otp-wrap">
+          <input class="auth-otp-inp" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code" id="aotp-0">
+          <input class="auth-otp-inp" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="aotp-1">
+          <input class="auth-otp-inp" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="aotp-2">
+          <input class="auth-otp-inp" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="aotp-3">
+          <input class="auth-otp-inp" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="aotp-4">
+          <input class="auth-otp-inp" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" id="aotp-5">
+        </div>
+
+        <button class="auth-cta" id="auth-btn-verify" onclick="authVerifyOTP()">
+          <span id="auth-verify-lbl">Confirmer</span>
+          <div class="auth-spin" id="auth-spin-2"></div>
+        </button>
+
+        <div class="auth-timer">
+          <span id="auth-timer-txt">Renvoyer dans <strong id="auth-timer-n">60</strong>s</span>
+          <button class="auth-resend" id="auth-resend-btn" onclick="authResend()" disabled>Renvoyer</button>
+        </div>
+
+        <div class="auth-trust">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Code à usage unique · Chiffrement SSL
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-mark" style="overflow:visible;background:none;border-radius:0;box-shadow:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center">
+        <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="100" rx="22" fill="#6D5DFC"/>
+          <rect x="18" y="18" width="16" height="56" rx="4" fill="rgba(210,205,255,0.92)"/>
+          <rect x="18" y="58" width="46" height="16" rx="4" fill="rgba(210,205,255,0.92)"/>
+          <rect x="48" y="18" width="34" height="34" rx="7" fill="rgba(210,205,255,0.75)"/>
+          <path d="M65 26 L66.5 31.5 L72 33 L66.5 34.5 L65 40 L63.5 34.5 L58 33 L63.5 31.5 Z" fill="#6D5DFC" opacity="0.9"/>
+        </svg>
+      </div>
+      <span class="nav-logo-name">Loksite</span>
+    </a>
+    <div class="nav-links">
+      <a href="#video" class="nav-link">Vidéo</a>
+      <a href="#probleme" class="nav-link">Le constat</a>
+      <a href="#fonctionnalites" class="nav-link">Fonctionnalités</a>
+      <a href="#tarifs" class="nav-link">Tarifs</a>
+      <a href="#personnalisation" class="nav-link">Styles de sites</a>
+      <a href="#avis" class="nav-link">Avis</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
+    <!-- spacer sur mobile quand nav-links est caché -->
+    <div class="nav-spacer" style="display:none" id="nav-spacer"></div>
+    <div class="nav-actions">
+      <button class="btn-ghost" onclick="openAuth()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        Connexion
+      </button>
+      <button class="btn-pr nav-btn-demo" onclick="scrollToContact()">
+        Demander une démo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" onclick="mobNavOpen()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══ MOBILE NAV DRAWER ══ -->
+<div class="mob-nav-overlay" id="mob-nav-overlay" onclick="mobNavClose()"></div>
+<div class="mob-nav-drawer" id="mob-nav-drawer">
+  <div class="mob-nav-header">
+    <a href="#" class="nav-logo" onclick="mobNavClose()">
+      <svg width="28" height="28" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="22" fill="#6D5DFC"/>
+        <rect x="18" y="18" width="16" height="56" rx="4" fill="rgba(210,205,255,0.92)"/>
+        <rect x="18" y="58" width="46" height="16" rx="4" fill="rgba(210,205,255,0.92)"/>
+        <rect x="48" y="18" width="34" height="34" rx="7" fill="rgba(210,205,255,0.75)"/>
+        <path d="M65 26 L66.5 31.5 L72 33 L66.5 34.5 L65 40 L63.5 34.5 L58 33 L63.5 31.5 Z" fill="#6D5DFC" opacity="0.9"/>
+      </svg>
+      <span style="font-size:16px;font-weight:900;color:var(--text);letter-spacing:-.05em">Loksite</span>
+    </a>
+    <button class="mob-nav-close" onclick="mobNavClose()">✕</button>
+  </div>
+  <div class="mob-nav-links">
+    <a href="#video" class="mob-nav-link" onclick="mobNavClose()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Vidéo de présentation
+    </a>
+    <a href="#probleme" class="mob-nav-link" onclick="mobNavClose()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Le constat
+    </a>
+    <a href="#fonctionnalites" class="mob-nav-link" onclick="mobNavClose()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Fonctionnalités
+    </a>
+    <a href="#personnalisation" class="mob-nav-link" onclick="mobNavClose()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Styles de sites
+    </a>
+    <a href="#avis" class="mob-nav-link" onclick="mobNavClose()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      Avis
+    </a>
+    <a href="#tarifs" class="mob-nav-link" onclick="mobNavClose()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+      Tarifs
+    </a>
+    <a href="#contact" class="mob-nav-link" onclick="mobNavClose()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Contact
+    </a>
+  </div>
+  <div class="mob-nav-sep"></div>
+  <div class="mob-nav-footer">
+    <button class="btn-ghost" onclick="mobNavClose();openAuth()" style="width:100%;justify-content:center;padding:12px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      Connexion
+    </button>
+    <button class="btn-pr" onclick="mobNavClose();scrollToContact()" style="width:100%;justify-content:center;padding:13px;font-size:14px">
+      Demander une démo
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+</div>
+<script>
+// ══ MOBILE NAV ══
+(function(){
+  var drawer = document.getElementById('mob-nav-drawer');
+  var overlay = document.getElementById('mob-nav-overlay');
+  var hamburger = document.getElementById('nav-hamburger');
+  if(!drawer||!overlay||!hamburger) return;
+
+  function openDrawer(){
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    hamburger.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeDrawer(){
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow='';
+  }
+
+  // Expose globalement
+  window.mobNavOpen = openDrawer;
+  window.mobNavClose = closeDrawer;
+
+  // Overlay click
+  overlay.addEventListener('click', closeDrawer);
+
+  // ESC key
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape') closeDrawer();
+  });
+
+  // Swipe right to close (touch)
+  var touchStartX = 0;
+  var touchStartY = 0;
+  drawer.addEventListener('touchstart', function(e){
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, {passive:true});
+  drawer.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    var dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+    if(dx > 60 && dy < 40) closeDrawer(); // swipe droite ≥ 60px
+  }, {passive:true});
+
+  // Fermer le drawer quand on clique un lien interne
+  drawer.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(){
+      setTimeout(closeDrawer, 80);
+    });
+  });
+})();
+
+// ══ SCROLL TO CONTACT ══
+function scrollToContact(){
+  var el = document.getElementById('contact');
+  if(!el) return;
+  var top = el.getBoundingClientRect().top + window.scrollY - 70;
+  window.scrollTo({top: top, behavior:'smooth'});
+}
+
+// ══ PLAN — Voir tous les détails ══
+function planToggle(btn){
+  var card = btn.closest('.plan-card');
+  if(!card) return;
+  var short = card.querySelector('.plan-features-short');
+  var full = card.querySelector('.plan-features-full');
+  if(!short || !full) return;
+  var isOpen = btn.classList.toggle('open');
+  if(isOpen){
+    short.hidden = true;
+    full.hidden = false;
+    btn.childNodes[0].textContent = 'Voir moins ';
+  } else {
+    short.hidden = false;
+    full.hidden = true;
+    btn.childNodes[0].textContent = 'Voir tous les détails ';
+  }
+}
+</script>
+<section class="lk-hero">
+  <div class="container">
+    <div class="lk-hero-inner">
+
+      <div class="lk-hero-top">
+        <div class="lk-eyebrow"><span class="lk-pulse-dot"></span> IA · Sites web · Commerces locaux</div>
+
+        <h1 class="lk-h1">Confirmez votre présence en ligne avec un site web <span class="lk-grad">100% personnalisé.</span></h1>
+      </div>
+
+      <div class="lk-hero-bottom">
+        <p class="lk-sub">Créez, modifiez et faites évoluer votre site par vous-même, à tout moment et depuis n'importe où. Suivez vos statistiques, vos réservations et vos modifications depuis un seul et même espace.</p>
+
+        <div class="lk-ctas">
+          <button class="lk-btn lk-btn-primary" onclick="scrollToContact()">
+            Créer mon site
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <a href="#video" class="lk-btn lk-btn-secondary">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            Voir la démonstration
+          </a>
+        </div>
+      </div>
+
+      <div class="lk-scene-wrap">
+        <div class="lk-scene" id="lk-scene">
+
+          <svg class="lk-connectors" viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="lkLineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#8b6bff" stop-opacity=".75"/>
+                <stop offset="100%" stop-color="#5849e0" stop-opacity=".15"/>
+              </linearGradient>
+              <filter id="lkSoftGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation=".35" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <path class="lk-connector" d="M50,50 L88,50" style="animation-delay:-.2s"/>
+            <path class="lk-connector" d="M50,50 L76.9,74" style="animation-delay:-.6s"/>
+            <path class="lk-connector" d="M50,50 L50,84" style="animation-delay:-1s"/>
+            <path class="lk-connector" d="M50,50 L23.1,74" style="animation-delay:-1.4s"/>
+            <path class="lk-connector" d="M50,50 L12,50" style="animation-delay:-1.8s"/>
+            <path class="lk-connector" d="M50,50 L23.1,26" style="animation-delay:-2.2s"/>
+            <path class="lk-connector" d="M50,50 L50,16" style="animation-delay:-.4s"/>
+            <path class="lk-connector" d="M50,50 L76.9,26" style="animation-delay:-.8s"/>
+          </svg>
+
+          <div class="lk-card lk-hub lk-pos-c" style="animation-delay:.5s,0s">
+            <div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg></div>
+            <div class="lk-txt"><div class="lk-label">Site Web</div><div class="lk-sub-label">Votre écosystème</div></div>
+          </div>
+
+          <div class="lk-card lk-pos-r" style="animation-delay:.65s,.1s">
+            <div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20v.01"/></svg></div>
+            <div class="lk-label">QR codes</div>
+          </div>
+
+          <div class="lk-card lk-pos-br" style="animation-delay:.75s,.6s">
+            <div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+            <div class="lk-label">Réservations</div>
+          </div>
+
+          <div class="lk-card lk-pos-b" style="animation-delay:.85s,1.1s">
+            <div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+            <div class="lk-label">Commandes</div>
+          </div>
+
+          <div class="lk-card lk-pos-bl" style="animation-delay:.95s,.3s">
+            <div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
+            <div class="lk-label">Analytics</div>
+          </div>
+
+          <div class="lk-card lk-pos-l" style="animation-delay:1.05s,.9s">
+            <div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+            <div class="lk-label">Sécurité</div>
+          </div>
+
+          <div class="lk-card lk-pos-tl" style="animation-delay:1.15s,.2s">
+            <div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.4 8.4 8.3 8.3 0 01-3.8-.9L3 21l1.9-5.8a8.3 8.3 0 01-.9-3.8A8.4 8.4 0 0112.5 3h.1a8.4 8.4 0 018.4 8.4z"/></svg></div>
+            <div class="lk-label">Messagerie</div>
+          </div>
+
+          <div class="lk-card lk-pos-t" style="animation-delay:1.25s,.7s">
+            <div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg></div>
+            <div class="lk-label">Devis & RDV</div>
+          </div>
+
+          <div class="lk-card lk-pos-tr" style="animation-delay:1.35s,.5s">
+            <div class="lk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+            <div class="lk-label">Éditeur IA</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var scene = document.getElementById('lk-scene');
+  if(!scene) return;
+  var wrap = scene.parentElement;
+  var tx=0, ty=0, cx=0, cy=0;
+  wrap.addEventListener('mousemove', function(e){
+    var r = wrap.getBoundingClientRect();
+    var px = (e.clientX - r.left) / r.width - 0.5;
+    var py = (e.clientY - r.top) / r.height - 0.5;
+    tx = px * 16; ty = py * 16;
+  });
+  wrap.addEventListener('mouseleave', function(){ tx=0; ty=0; });
+  function raf(){
+    cx += (tx - cx) * 0.06;
+    cy += (ty - cy) * 0.06;
+    scene.style.transform = 'rotateY('+(cx*0.6)+'deg) rotateX('+(-cy*0.6)+'deg) translate('+cx+'px,'+cy+'px)';
+    requestAnimationFrame(raf);
+  }
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) raf();
+})();
+</script>
+
+<!-- ══ VIDEO ══ -->
+<section id="video" style="padding:90px 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="container">
+    <div class="section-hd reveal" style="margin-bottom:44px">
+      <div class="tag">Présentation</div>
+      <h2 class="section-h2">Découvrez Loksite en vidéo</h2>
+      <p class="section-sub">En un peu plus de 6 minutes, comprenez comment Loksite transforme la présence en ligne de votre commerce.</p>
+    </div>
+    <div class="reveal" style="max-width:860px;margin:0 auto;position:relative">
+      <!-- Glow background -->
+      <div style="position:absolute;inset:-40px;background:radial-gradient(ellipse at 50% 50%,rgba(109,93,252,.18) 0%,transparent 70%);filter:blur(30px);pointer-events:none;z-index:0"></div>
+      <!-- Video wrapper -->
+      <div style="position:relative;z-index:1;border-radius:var(--r-xl);overflow:hidden;border:1px solid rgba(109,93,252,.25);box-shadow:0 24px 64px rgba(0,0,0,.5),0 0 0 1px rgba(109,93,252,.08)">
+        <!-- Chrome bar style mockup -->
+        <div style="background:#0B0E16;border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:8px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#ff5f57"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:#febc2e"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:#28c840"></div>
+          <div style="flex:1;background:rgba(255,255,255,.05);border-radius:6px;padding:4px 12px;margin:0 10px;font-size:10px;color:var(--t3);font-family:var(--mono);text-align:center">loksite.fr — Vidéo de présentation</div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="1.5" width="14" height="14"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </div>
+        <!-- Video lite-embed : poster cliquable, iframe Google Drive chargé au clic -->
+        <div style="position:relative;padding-bottom:56.25%;height:0;background:#07090E">
+          <div id="videoPoster" onclick="loksitePlayVideo()" role="button" aria-label="Lancer la vidéo de présentation" style="position:absolute;inset:0;cursor:pointer;background:#07090E url('assets/video-cover.jpg') center/contain no-repeat;display:flex;align-items:center;justify-content:center;z-index:2">
+            <div style="width:76px;height:76px;border-radius:50%;background:rgba(109,93,252,.95);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(109,93,252,.5);transition:transform .2s ease">
+              <svg viewBox="0 0 24 24" fill="white" width="28" height="28" style="margin-left:4px"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <div id="videoFrameHolder" style="position:absolute;top:0;left:0;width:100%;height:100%"></div>
+        </div>
+        <script>
+          function loksitePlayVideo(){
+            document.getElementById('videoFrameHolder').innerHTML =
+              '<iframe src="https://drive.google.com/file/d/18yr3X3yD0RFpIcp1KnHaXnkK12ty0KOZ/preview?autoplay=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allow="autoplay; fullscreen" allowfullscreen title="Présentation Loksite"></iframe>';
+            document.getElementById('videoPoster').style.display = 'none';
+          }
+        </script>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROBLEM ══ -->
+<section class="problem" id="probleme">
+  <div class="container">
+    <div class="section-hd reveal">
+      <div class="tag">Le constat</div>
+      <h2 class="section-h2">Votre site web vous freine plus qu'il ne vous aide ?</h2>
+      <p class="section-sub">Pour la plupart des commerçants, faire évoluer son site est plus compliqué que de gérer son commerce.</p>
+    </div>
+    <div class="lk-feats-grid lk-feats-grid-3">
+      <div class="lk-feat-card reveal reveal-delay-1">
+        <div class="lk-feat-icon" style="background:rgba(239,68,68,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.75" width="20" height="20"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h4 class="lk-feat-h4">Modifications lentes</h4>
+        <p class="lk-feat-line">Des jours d'attente pour changer un texte ou une photo.</p>
+      </div>
+      <div class="lk-feat-card reveal reveal-delay-2">
+        <div class="lk-feat-icon" style="background:rgba(239,68,68,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.75" width="20" height="20"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+        <h4 class="lk-feat-h4">Coûts qui s'accumulent</h4>
+        <p class="lk-feat-line">Chaque promo, chaque prix à jour, ça coûte.</p>
+      </div>
+      <div class="lk-feat-card reveal reveal-delay-3">
+        <div class="lk-feat-icon" style="background:rgba(239,68,68,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.75" width="20" height="20"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+        <h4 class="lk-feat-h4">Sans visibilité, pas de clients</h4>
+        <p class="lk-feat-line">75% cherchent en ligne avant de venir <span style="color:var(--t3)">(Francenum, 2024)</span></p>
+      </div>
+      <div class="lk-feat-card reveal reveal-delay-1">
+        <div class="lk-feat-icon" style="background:rgba(239,68,68,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.75" width="20" height="20"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <h4 class="lk-feat-h4">Réservations manquées</h4>
+        <p class="lk-feat-line">44% arrivent hors horaires — perdues sans système <span style="color:var(--t3)">(Zenchef, 2025)</span></p>
+      </div>
+      <div class="lk-feat-card reveal reveal-delay-2">
+        <div class="lk-feat-icon" style="background:rgba(239,68,68,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.75" width="20" height="20"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20v.01"/></svg></div>
+        <h4 class="lk-feat-h4">Menus papier dépassés</h4>
+        <p class="lk-feat-line">Un QR code suffit, toujours à jour.</p>
+      </div>
+      <div class="lk-feat-card reveal reveal-delay-3">
+        <div class="lk-feat-icon" style="background:rgba(239,68,68,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.75" width="20" height="20"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <h4 class="lk-feat-h4">Site à l'abandon</h4>
+        <p class="lk-feat-line">60% des sites non mis à jour depuis 1 an <span style="color:var(--t3)">(BPI France, 2023)</span></p>
+      </div>
+    </div>
+    <div class="problem-solution reveal reveal-delay-2">
+      <div class="problem-solution-mark">✓</div>
+      <div>
+        <div class="problem-solution-eyebrow">Avec Loksite</div>
+        <div class="problem-solution-txt">Modifiez votre site en quelques secondes — vous-même, ou en demandant simplement à l'IA de le faire pour vous.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══ -->
+<section class="features" id="fonctionnalites">
+  <div class="container">
+    <div class="section-hd reveal">
+      <div class="tag">Fonctionnalités</div>
+      <h2 class="section-h2">Tout pour gérer votre présence digitale.</h2>
+      <p class="section-sub">Une plateforme complète, pensée pour les commerces locaux qui veulent un site pro sans effort.</p>
+    </div>
+
+    <!-- Flagship : Éditeur IA -->
+    <div class="lk-feats-flagship reveal">
+      <div class="lk-feats-flagship-txt">
+        <div class="feat-ai-badge">IA — fonctionnalité phare</div>
+        <h3 class="lk-flagship-h3">Modifiez votre site en discutant avec l'IA</h3>
+        <p class="lk-flagship-p">Cliquez sur votre site, dites ce que vous voulez changer en français simple. C'est publié en 30 secondes, sans une ligne de code.</p>
+      </div>
+      <div class="lk-feats-flagship-demo">
+        <div>
+          <div class="lk-chat-bubble">"Ajoute une offre -20% sur la page d'accueil"</div>
+          <div class="lk-chat-reply">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>
+            Publié en 28s
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grille compacte -->
+    <div class="lk-feats-grid">
+      <div class="lk-feat-card reveal reveal-delay-1">
+        <div class="lk-feat-icon" style="background:var(--pr-light)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--pr)" stroke-width="1.75" width="20" height="20"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg></div>
+        <h4 class="lk-feat-h4">Site vitrine pro</h4>
+        <p class="lk-feat-line">Hébergé, sécurisé, nom de domaine inclus.</p>
+      </div>
+      <div class="lk-feat-card reveal reveal-delay-2">
+        <div class="lk-feat-icon" style="background:rgba(34,197,94,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.75" width="20" height="20"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <h4 class="lk-feat-h4">Réservations</h4>
+        <p class="lk-feat-line">Ouvertes 24h/24, confirmées automatiquement.</p>
+      </div>
+      <div class="lk-feat-card reveal reveal-delay-3">
+        <div class="lk-feat-icon" style="background:var(--blue-light)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.75" width="20" height="20"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="14" y1="14" x2="14" y2="21"/><line x1="21" y1="14" x2="21" y2="21"/><line x1="17.5" y1="14" x2="17.5" y2="17.5"/><line x1="14" y1="17.5" x2="21" y2="17.5"/></svg></div>
+        <h4 class="lk-feat-h4">QR codes illimités</h4>
+        <p class="lk-feat-line">Menus, cartes de visite, affiches — toujours à jour.</p>
+      </div>
+      <div class="lk-feat-card reveal reveal-delay-1">
+        <div class="lk-feat-icon" style="background:rgba(20,184,166,.12)"><svg viewBox="0 0 24 24" fill="none" stroke="#14B8A6" stroke-width="1.75" width="20" height="20"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+        <h4 class="lk-feat-h4">Commandes en direct</h4>
+        <p class="lk-feat-line">Reçues depuis votre QR, prêtes à servir.</p>
+      </div>
+      <div class="lk-feat-card reveal reveal-delay-2">
+        <div class="lk-feat-icon" style="background:rgba(245,158,11,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.75" width="20" height="20"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <h4 class="lk-feat-h4">Analytics temps réel</h4>
+        <p class="lk-feat-line">Visites et trafic, connectés à Google Analytics.</p>
+      </div>
+      <div class="lk-feat-card reveal reveal-delay-3">
+        <div class="lk-feat-icon" style="background:rgba(239,68,68,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.75" width="20" height="20"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+        <h4 class="lk-feat-h4">Sécurité & fiabilité</h4>
+        <p class="lk-feat-line">HTTPS et sauvegardes automatiques.</p>
+      </div>
+      <div class="lk-feat-card reveal reveal-delay-1">
+        <div class="lk-feat-icon" style="background:rgba(236,72,153,.12)"><svg viewBox="0 0 24 24" fill="none" stroke="#EC4899" stroke-width="1.75" width="20" height="20"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg></div>
+        <h4 class="lk-feat-h4">Devis & RDV</h4>
+        <p class="lk-feat-line">Chaque demande arrive dans votre espace.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHY ══ -->
+<section class="why">
+  <div class="container">
+    <div class="why-inner">
+      <div class="reveal">
+        <div class="tag">Pourquoi Loksite</div>
+        <h2 class="section-h2">Aussi simple que d'envoyer un message.</h2>
+        <div class="why-list">
+          <div class="why-item">
+            <div class="why-icon" style="background:var(--pr-light)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--pr)" stroke-width="1.75" width="18" height="18"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+            <div><div class="why-h4">Zéro compétence technique</div><div class="why-p">Écrivez ce que vous voulez en français simple. L'IA comprend et applique. Aucun mot de code.</div></div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon" style="background:rgba(34,197,94,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.75" width="18" height="18"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+            <div><div class="why-h4">Modifications en temps réel</div><div class="why-p">Votre site est mis à jour immédiatement. Pas d'attente, pas de ticket, pas d'email à envoyer.</div></div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon" style="background:rgba(245,158,11,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.75" width="18" height="18"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+            <div><div class="why-h4">Équipe toujours disponible</div><div class="why-p">Messagerie directe dans votre espace. Réponse sous 24h pour les questions complexes.</div></div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon" style="background:rgba(59,130,246,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.75" width="18" height="18"><polyline points="6 3 20 3 22 9 12 22 2 9 4 3 6 3"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="22" x2="12" y2="9"/></svg></div>
+            <div><div class="why-h4">Tarif transparent</div><div class="why-p">29€, 49€ ou 79€/mois. Tout inclus. Aucun frais caché. Résiliez quand vous voulez.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="why-stats reveal reveal-delay-2">
+        <div class="why-stat">
+          <div class="wss-val">30s</div>
+          <div class="wss-lbl">Pour publier une modification IA</div>
+        </div>
+        <div class="why-stat">
+          <div class="wss-val">0</div>
+          <div class="wss-lbl">Ligne de code requise</div>
+        </div>
+        <div class="why-stat">
+          <div class="wss-val">24h</div>
+          <div class="wss-lbl">Délai de réponse garanti</div>
+        </div>
+        <div class="why-stat">
+          <div class="wss-val">29€</div>
+          <div class="wss-lbl">Offre d'entrée / mois</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SHOWCASE ══ -->
+
+
+<!-- ══ PERSONNALISATION ══ -->
+<section class="personalize" id="personnalisation">
+  <div class="container">
+    <div class="section-hd reveal">
+      <div class="tag">Personnalisation</div>
+      <h2 class="section-h2">Votre style. Votre identité.</h2>
+      <p class="section-sub">Le même commerce peut raconter trois histoires totalement différentes. Nous adaptons chaque détail à votre image, jamais l'inverse.</p>
+    </div>
+    <div class="personalize-grid">
+
+      <!-- Variante 1 — Futuriste & Premium -->
+      <div class="pz-card reveal reveal-delay-1">
+        <div class="pz-frame pz-futur">
+          <div class="pz-bar"><span></span><span></span><span></span><div class="pz-url">latable-emile.loksite.fr</div></div>
+          <div class="pz-nav">
+            <div class="pz-nav-logo">La Table d'Émile</div>
+            <div class="pz-nav-links"><span>Menu</span><span>Contact</span></div>
+            <div class="pz-nav-cta">Réserver</div>
+          </div>
+          <div class="pz-hero">
+            <img class="pz-slide" src="https://images.pexels.com/photos/30469688/pexels-photo-30469688.jpeg?auto=compress&cs=tinysrgb&w=900&h=900&dpr=1" alt="Plat gastronomique signature">
+            <img class="pz-slide" src="https://images.pexels.com/photos/30469700/pexels-photo-30469700.jpeg?auto=compress&cs=tinysrgb&w=900&h=900&dpr=1" alt="Présentation gastronomique">
+            <img class="pz-slide" src="https://images.pexels.com/photos/30469692/pexels-photo-30469692.jpeg?auto=compress&cs=tinysrgb&w=900&h=900&dpr=1" alt="Dressage gastronomique sur table">
+            <div class="pz-hero-overlay"></div>
+            <div class="pz-hero-content">
+              <div class="pz-hero-eyebrow">Restaurant gastronomique</div>
+              <div class="pz-hero-title">La Table d'Émile</div>
+              <div class="pz-hero-sub">Une expérience culinaire augmentée par l'IA, du menu à la réservation.</div>
+              <div class="pz-hero-btn">Réserver une table</div>
+            </div>
+          </div>
+          <div class="pz-section">
+            <div class="pz-section-title">Réservation intelligente</div>
+            <div class="pz-section-text">Disponibilités mises à jour en direct, confirmation immédiate par l'IA — sans appel, sans attente.</div>
+            <div class="pz-section-row">
+              <div class="pz-chip">Menu interactif</div>
+              <div class="pz-chip">IA 24/7</div>
+              <div class="pz-chip">Paiement en ligne</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="pz-label-title">Futuriste & Premium</div>
+          <div class="pz-label-sub">Glassmorphism, dégradés et lumière — l'image d'un restaurant gastronomique innovant.</div>
+        </div>
+      </div>
+
+      <!-- Variante 2 — Authentique & Chaleureux -->
+      <div class="pz-card reveal reveal-delay-2">
+        <div class="pz-frame pz-warm">
+          <div class="pz-bar"><span></span><span></span><span></span><div class="pz-url">latable-emile.loksite.fr</div></div>
+          <div class="pz-nav">
+            <div class="pz-nav-logo">La Table d'Émile</div>
+            <div class="pz-nav-links"><span>Menu</span><span>Contact</span></div>
+            <div class="pz-nav-cta">Réserver</div>
+          </div>
+          <div class="pz-hero">
+            <img class="pz-photo" src="https://images.pexels.com/photos/30469688/pexels-photo-30469688.jpeg?auto=compress&cs=tinysrgb&w=900&h=900&dpr=1" alt="Plat gastronomique signature">
+            <div class="pz-hero-overlay"></div>
+            <div class="pz-hero-content">
+              <div class="pz-hero-eyebrow">Cuisine de saison, fait maison</div>
+              <div class="pz-hero-title">La Table d'Émile</div>
+              <div class="pz-hero-sub">Des produits frais, une équipe passionnée, une table chaleureuse depuis 1987.</div>
+              <div class="pz-hero-btn">Voir la carte</div>
+            </div>
+          </div>
+          <div class="pz-section">
+            <div class="pz-section-title">Notre histoire</div>
+            <div class="pz-section-text">Trois générations de cuisiniers, une même envie : recevoir comme à la maison, avec des produits du marché choisis chaque matin.</div>
+            <div class="pz-section-row">
+              <div class="pz-chip">Fait maison</div>
+              <div class="pz-chip">Produits locaux</div>
+              <div class="pz-chip">Terrasse</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="pz-label-title">Authentique & Chaleureux</div>
+          <div class="pz-label-sub">Tons bois et crème, typographie élégante — l'image d'un restaurant familial haut de gamme.</div>
+        </div>
+      </div>
+
+      <!-- Variante 3 — Minimaliste & Luxe -->
+      <div class="pz-card reveal reveal-delay-3">
+        <div class="pz-frame pz-mini">
+          <div class="pz-bar"><span></span><span></span><span></span><div class="pz-url">latable-emile.loksite.fr</div></div>
+          <div class="pz-nav">
+            <div class="pz-nav-logo">La Table d'Émile</div>
+            <div class="pz-nav-links"><span>Menu</span><span>Contact</span></div>
+            <div class="pz-nav-cta">Réserver</div>
+          </div>
+          <div class="pz-hero">
+            <img class="pz-photo" src="https://images.pexels.com/photos/30469688/pexels-photo-30469688.jpeg?auto=compress&cs=tinysrgb&w=900&h=900&dpr=1" alt="Plat gastronomique signature">
+            <div class="pz-hero-overlay"></div>
+            <div class="pz-hero-content">
+              <div class="pz-hero-eyebrow">Établissement gastronomique</div>
+              <div class="pz-hero-title">LA TABLE D'ÉMILE</div>
+              <div class="pz-hero-sub">Une adresse confidentielle. Réservation sur demande, du mardi au samedi.</div>
+              <div class="pz-hero-btn">Réserver</div>
+            </div>
+          </div>
+          <div class="pz-section">
+            <div class="pz-section-title">Informations</div>
+            <div class="pz-section-text">12 rue des Capucins, Lille — Service de 19h à 23h. Tenue correcte exigée. Réservation recommandée.</div>
+          </div>
+        </div>
+        <div>
+          <div class="pz-label-title">Minimaliste & Luxe</div>
+          <div class="pz-label-sub">Noir & blanc, espace généreux, typographie premium — l'image d'un établissement exclusif.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ AVIS ══ -->
+<section class="reviews" id="avis">
+  <div class="container">
+    <div class="section-hd reveal">
+      <div class="tag">Ils nous font confiance</div>
+      <h2 class="section-h2">Ce que disent nos clients.</h2>
+      <p class="section-sub">Des commerçants locaux qui ont modernisé leur présence en ligne avec Loksite.</p>
+    </div>
+    <div class="reviews-grid">
+
+      <div class="review-card reveal reveal-delay-1">
+        <div class="review-stars">
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="review-text">"Avant je devais appeler une agence pour changer une phrase sur mon site. Maintenant je le fais moi-même en deux minutes depuis mon téléphone. C'est vraiment libérateur."</div>
+        <div class="review-author">
+          <div class="review-ava" style="background:linear-gradient(135deg,#6D5DFC,#4f46e5)">SL</div>
+          <div>
+            <div class="review-name">Sophie L.</div>
+            <div class="review-role">Gérante — Salon de coiffure, Lyon</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card reveal reveal-delay-2">
+        <div class="review-stars">
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="review-text">"On a mis à jour notre carte du jour via l'IA en écrivant juste 'remplace le plat du jour par une entrecôte frites'. C'était publié en 30 secondes. Mon équipe n'en revient toujours pas."</div>
+        <div class="review-author">
+          <div class="review-ava" style="background:linear-gradient(135deg,#22C55E,#16a34a)">MT</div>
+          <div>
+            <div class="review-name">Marc T.</div>
+            <div class="review-role">Chef propriétaire — Restaurant, Bordeaux</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card reveal reveal-delay-3">
+        <div class="review-stars">
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg class="review-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="review-text">"Le dashboard est vraiment bien pensé. Je vois mes réservations, mes stats et je peux modifier le site au même endroit. C'est exactement ce dont j'avais besoin sans avoir à payer une agence."</div>
+        <div class="review-author">
+          <div class="review-ava" style="background:linear-gradient(135deg,#F59E0B,#d97706)">CR</div>
+          <div>
+            <div class="review-name">Claire R.</div>
+            <div class="review-role">Fondatrice — Boutique artisanale, Nantes</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="reviews-cta reveal">
+      <div class="reviews-cta-title">Prêt à rejoindre nos clients ?</div>
+      <div class="reviews-cta-sub">Première modification publiée en moins de 5 minutes après l'ouverture de votre espace.</div>
+      <button class="btn-hero" onclick="openAuth()" style="margin:0 auto">
+        Ouvrir mon espace
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PLANS ══ -->
+<section class="plans-section" id="tarifs">
+  <div class="container">
+    <div class="section-hd reveal">
+      <div class="section-tag">TARIFS</div>
+      <h2 class="section-h2">Un plan adapté à votre activité.</h2>
+      <p class="section-sub">Sans engagement. Résiliez quand vous voulez.</p>
+    </div>
+
+    <div class="plans-common reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--pr)" stroke-width="2.5" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+      Site vitrine complet · Hébergement inclus · Nom de domaine offert — <strong>dans toutes les formules</strong>
+    </div>
+
+    <div class="plans-grid reveal">
+
+      <!-- Essentiel -->
+      <div class="plan-card">
+        <div class="plan-name">Essentiel</div>
+        <div class="plan-price"><span class="plan-amount">29</span><span class="plan-unit">€/mois</span></div>
+        <ul class="plan-features plan-features-short">
+          <li class="ok">4 enregistrements / mois</li>
+          <li class="ok">2 publications / mois</li>
+          <li class="ok">Statistiques de base</li>
+          <li class="ok">Messagerie & espace client</li>
+        </ul>
+        <ul class="plan-features plan-features-full" hidden>
+          <li class="ok">Site vitrine complet</li>
+          <li class="ok">Hébergement inclus</li>
+          <li class="ok">Nom de domaine offert</li>
+          <li class="ok">4 enregistrements / mois</li>
+          <li class="ok">2 publications / mois</li>
+          <li class="ok">Statistiques de base (visiteurs, sessions)</li>
+          <li class="ok">Messagerie avec Loksite</li>
+          <li class="ok">Espace client complet</li>
+        </ul>
+        <button type="button" class="plan-toggle" onclick="planToggle(this)">
+          Voir tous les détails
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="11" height="11"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <a href="#contact" class="plan-btn plan-btn-outline">Choisir ce plan</a>
+      </div>
+
+      <!-- Standard (recommandé) -->
+      <div class="plan-card plan-card-featured">
+        <div class="plan-badge">Recommandé</div>
+        <div class="plan-name">Standard</div>
+        <div class="plan-price"><span class="plan-amount">49</span><span class="plan-unit">€/mois</span></div>
+        <ul class="plan-features plan-features-short">
+          <li class="ok">15 enregistrements · 10 publications / mois</li>
+          <li class="ok">10 modifications IA / mois</li>
+          <li class="ok">Réservation en ligne intégrée</li>
+          <li class="ok">QR code & statistiques avancées</li>
+          <li class="ok">Pages perso à 25€/page</li>
+        </ul>
+        <ul class="plan-features plan-features-full" hidden>
+          <li class="ok">Site vitrine complet</li>
+          <li class="ok">Hébergement inclus</li>
+          <li class="ok">Nom de domaine offert</li>
+          <li class="ok">15 enregistrements / mois</li>
+          <li class="ok">10 publications / mois</li>
+          <li class="ok">10 modifications IA / mois</li>
+          <li class="ok">Statistiques avancées (sessions, clics, sources, appareils)</li>
+          <li class="ok">Réservation en ligne intégrée à la vitrine</li>
+          <li class="ok">Rapport PDF mensuel d'activité</li>
+          <li class="ok">Messagerie avec Loksite</li>
+          <li class="ok">Espace client complet</li>
+          <li class="ok">QR code</li>
+          <li class="ok">Programmation de publication</li>
+          <li class="ok">Pages personnalisées (menu) à 25€/page — langue &amp; devise sélectionnables</li>
+        </ul>
+        <button type="button" class="plan-toggle" onclick="planToggle(this)">
+          Voir tous les détails
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="11" height="11"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <a href="#contact" class="plan-btn plan-btn-primary">Choisir ce plan</a>
+      </div>
+
+      <!-- Premium -->
+      <div class="plan-card">
+        <div class="plan-name">Premium</div>
+        <div class="plan-price"><span class="plan-amount">79</span><span class="plan-unit">€/mois</span></div>
+        <ul class="plan-features plan-features-short">
+          <li class="ok">Enregistrements, publications & IA illimités</li>
+          <li class="ok">Service prioritaire & automatisation</li>
+          <li class="ok">Statistiques complètes + conversion</li>
+          <li class="ok">Pages perso illimitées à 19€/page</li>
+        </ul>
+        <ul class="plan-features plan-features-full" hidden>
+          <li class="ok">Site vitrine complet</li>
+          <li class="ok">Hébergement inclus</li>
+          <li class="ok">Nom de domaine offert</li>
+          <li class="ok">Enregistrements illimités</li>
+          <li class="ok">Publications illimitées</li>
+          <li class="ok">Modifications IA illimitées</li>
+          <li class="ok">Service prioritaire</li>
+          <li class="ok">Automatisation</li>
+          <li class="ok">Export Excel sur demande</li>
+          <li class="ok">Réservation en ligne</li>
+          <li class="ok">Notifications (nouveaux rdv, documents)</li>
+          <li class="ok">Statistiques complètes avec graphiques : taux d'engagement, sections les + cliquées, conversion visiteurs → réservations</li>
+          <li class="ok">Rapport PDF mensuel et annuel avec comparaison</li>
+          <li class="ok">Messagerie avec Loksite</li>
+          <li class="ok">Espace client complet</li>
+          <li class="ok">QR code</li>
+          <li class="ok">Programmation de publication</li>
+          <li class="ok">Pages personnalisées illimitées à 19€/page — langue &amp; devise sélectionnables (conversion automatique en euros) — QR code sur table → menu → commande reçue dans votre espace</li>
+        </ul>
+        <button type="button" class="plan-toggle" onclick="planToggle(this)">
+          Voir tous les détails
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="11" height="11"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <a href="#contact" class="plan-btn plan-btn-outline">Choisir ce plan</a>
+      </div>
+
+      <!-- Personnalisé -->
+      <div class="plan-card plan-card-custom">
+        <div class="plan-name">Personnalisé</div>
+        <div class="plan-price-custom">Sur devis</div>
+        <ul class="plan-features">
+          <li class="ok">Ajusté à vos besoins exacts</li>
+          <li class="ok">Si aucune formule ne correspond</li>
+        </ul>
+        <a href="#contact" class="plan-btn plan-btn-outline">Choisir ce plan</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ PARRAINAGE ══ -->
+<section class="referral-section" id="parrainage">
+  <div class="container">
+    <div class="referral-card reveal">
+      <div class="referral-badge">Programme de parrainage</div>
+      <h2 class="referral-title">Devenez parrain, tout le monde y gagne.</h2>
+      <p class="referral-sub">Recommandez Loksite à un commerçant ou un professionnel autour de vous. Dès que son abonnement est actif, vous profitez de 6 mois à &minus;50% sur le vôtre.</p>
+
+      <div class="referral-grid referral-grid-single">
+        <div class="referral-item">
+          <div class="referral-item-title">Pour vous, le parrain</div>
+          <div class="referral-item-val">6 mois à &minus;50%</div>
+          <div class="referral-item-desc">sur votre abonnement en cours</div>
+        </div>
+      </div>
+
+      <a href="#contact" class="btn-hero" style="margin:32px auto 0">
+        Parrainer un commerçant
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+.referral-section{padding:40px 0 100px}
+.referral-card{
+  background:linear-gradient(135deg,rgba(109,93,252,.14),rgba(109,93,252,.05));
+  border:1.5px solid rgba(109,93,252,.4);
+  border-radius:var(--r-lg);
+  padding:56px 40px;
+  text-align:center;
+  box-shadow:0 10px 40px -12px rgba(109,93,252,.35), var(--sh-md);
+}
+.referral-badge{
+  display:inline-block;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--pr);background:var(--pr-light);padding:6px 14px;border-radius:99px;margin-bottom:16px;
+}
+.referral-title{font-size:32px;font-weight:900;color:var(--text);margin-bottom:12px}
+.referral-sub{font-size:15px;color:var(--t2);max-width:560px;margin:0 auto;line-height:1.6}
+.referral-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:520px;margin:36px auto 0}
+.referral-grid-single{grid-template-columns:1fr;max-width:280px}
+.referral-item{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:24px 16px}
+.referral-item-title{font-size:13px;font-weight:700;color:var(--t2);margin-bottom:6px}
+.referral-item-val{font-size:22px;font-weight:900;color:var(--pr);line-height:1.2}
+.referral-item-desc{font-size:12px;color:var(--t3);margin-top:4px}
+@media(max-width:640px){
+  .referral-grid{grid-template-columns:1fr}
+  .referral-title{font-size:24px}
+}
+</style>
+
+<style>
+.plans-section{padding:100px 0;background:var(--bg)}
+.plans-common{
+  display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;
+  text-align:center;font-size:13px;color:var(--t2);
+  background:var(--s1);border:1px solid var(--border);border-radius:99px;
+  padding:10px 22px;max-width:640px;margin:0 auto 28px;
+}
+.plans-common strong{color:var(--text)}
+.plans-common svg{flex-shrink:0}
+
+/* ── Carte création & configuration (paiement unique) ── */
+.setup-card{
+  margin-top:48px;
+  display:flex;align-items:center;justify-content:space-between;gap:32px;
+  background:linear-gradient(135deg,rgba(109,93,252,.14),rgba(109,93,252,.05));
+  border:1.5px solid rgba(109,93,252,.4);
+  border-radius:var(--r-lg);
+  padding:36px 40px;
+  box-shadow:0 10px 40px -12px rgba(109,93,252,.35), var(--sh-md);
+}
+.setup-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px}
+.setup-desc{font-size:14px;color:var(--t2);line-height:1.6;max-width:520px}
+.setup-price-block{flex-shrink:0;text-align:right}
+.setup-price{display:flex;align-items:baseline;justify-content:flex-end;gap:2px}
+.setup-amount{font-size:48px;font-weight:900;color:var(--pr);line-height:1}
+.setup-unit{font-size:22px;font-weight:800;color:var(--pr)}
+.setup-once{margin-top:6px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--t3)}
+
+.setup-plus{display:flex;justify-content:center;margin:20px 0}
+.setup-plus span{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--pr-light);color:var(--pr);
+  font-size:24px;font-weight:800;line-height:1;
+  border:1.5px solid rgba(109,93,252,.35);
+}
+
+/* ── Cartes d'abonnement ── */
+.plans-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:20px;align-items:stretch}
+.plan-card{background:#fff;border:1.5px solid #e5e7eb;border-radius:16px;padding:28px 24px;position:relative;display:flex;flex-direction:column;gap:0;box-shadow:var(--sh);transition:box-shadow .2s,transform .2s}
+.plan-card:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.plan-card-featured{border-color:var(--pr);box-shadow:0 0 0 1px var(--pr),var(--sh-md)}
+.plan-card-custom{background:#fafafa}
+.plan-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--pr);color:#fff;font-size:12px;font-weight:700;padding:4px 14px;border-radius:20px;white-space:nowrap}
+.plan-name{font-size:20px;font-weight:700;color:#111;margin-bottom:10px;min-height:24px}
+.plan-price{display:flex;align-items:baseline;gap:2px;margin-bottom:20px;min-height:46px}
+.plan-amount{font-size:38px;font-weight:800;color:#111}
+.plan-unit{font-size:14px;color:#6b7280;margin-left:2px}
+.plan-price-custom{font-size:26px;font-weight:800;color:var(--pr);margin-bottom:20px;min-height:46px;display:flex;align-items:center}
+.plan-features{list-style:none;padding:0;margin:0 0 24px;display:flex;flex-direction:column;gap:8px;flex:1}
+.plan-features li{font-size:13px;color:#374151;padding-left:22px;position:relative;line-height:1.45}
+.plan-features li.ok::before{content:'✓';position:absolute;left:0;color:#22c55e;font-weight:700}
+.plan-features li.no{color:#9ca3af}
+.plan-features li.no::before{content:'✕';position:absolute;left:0;color:#ef4444;font-size:11px;top:1px}
+.plan-toggle{
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  width:100%;background:none;border:none;cursor:pointer;
+  font-family:var(--font);font-size:12.5px;font-weight:700;color:var(--pr);
+  padding:8px 0 14px;margin-top:2px;
+}
+.plan-toggle:hover{color:var(--pr2)}
+.plan-toggle svg{transition:transform .25s ease}
+.plan-toggle.open svg{transform:rotate(180deg)}
+.plan-btn{display:block;text-align:center;padding:13px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;margin-top:auto;transition:opacity .2s}
+.plan-btn-primary{background:var(--pr);color:#fff}
+.plan-btn-outline{background:#fff;color:#111;border:1.5px solid #d1d5db}
+.plan-btn:hover{opacity:.85}
+
+@media(max-width:1100px){.plans-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){
+  .setup-card{flex-direction:column;align-items:flex-start;gap:20px;padding:28px 24px}
+  .setup-price-block{text-align:left;align-self:flex-start}
+  .setup-price{justify-content:flex-start}
+}
+@media(max-width:640px){.plans-grid{grid-template-columns:1fr}}
+</style>
+
+<!-- ══ CONTACT ══ -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact-inner">
+      <div class="reveal">
+        <div class="tag">Contact</div>
+        <h2 class="section-h2">Parlons de votre projet.</h2>
+        <p class="section-sub" style="font-size:14px">Remplissez le formulaire pour recevoir tout de suite, et gratuitement, les vidéos de présentation de Loksite. Vous pourrez ensuite réserver votre appel quand vous le souhaitez.</p>
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            Vidéos de présentation envoyées immédiatement
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+            100% gratuit, sans engagement
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.77a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+            Réservez votre appel quand vous voulez
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="cf-wrap">
+          <div id="cf-fields">
+            <div class="cf-row">
+              <div class="cf-group"><label class="cf-lbl">Prénom & Nom</label><input class="cf-inp" type="text" id="cf-nom" placeholder="Jean Dupont"></div>
+              <div class="cf-group"><label class="cf-lbl">Établissement</label><input class="cf-inp" type="text" id="cf-soc" placeholder="La Table d'Émile"></div>
+            </div>
+            <div class="cf-row">
+              <div class="cf-group"><label class="cf-lbl">Email</label><input class="cf-inp" type="email" id="cf-email" placeholder="vous@exemple.fr"></div>
+              <div class="cf-group"><label class="cf-lbl">Téléphone</label><input class="cf-inp" type="tel" id="cf-tel" placeholder="06 12 34 56 78"></div>
+            </div>
+            <div class="cf-group"><label class="cf-lbl">Votre message</label><textarea class="cf-ta" id="cf-msg" placeholder="Parlez-nous de votre activité, de ce que vous souhaitez modifier ou améliorer sur votre présence en ligne…"></textarea></div>
+            <button class="cf-submit" id="cf-btn" onclick="cfSubmit()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Envoyer ma demande
+            </button>
+          </div>
+          <div class="cf-ok" id="cf-ok">
+            <div class="cf-ok-icon">✅</div>
+            <div class="cf-ok-title">Vidéos en route !</div>
+            <div class="cf-ok-sub">Vous recevez les vidéos de présentation Loksite gratuitement par email. Réservez votre appel quand vous voulez.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+          <svg width="26" height="26" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+            <rect width="100" height="100" rx="22" fill="#6D5DFC"/>
+            <rect x="18" y="18" width="16" height="56" rx="4" fill="rgba(210,205,255,0.92)"/>
+            <rect x="18" y="58" width="46" height="16" rx="4" fill="rgba(210,205,255,0.92)"/>
+            <rect x="48" y="18" width="34" height="34" rx="7" fill="rgba(210,205,255,0.75)"/>
+            <path d="M65 26 L66.5 31.5 L72 33 L66.5 34.5 L65 40 L63.5 34.5 L58 33 L63.5 31.5 Z" fill="#6D5DFC" opacity="0.9"/>
+          </svg>
+          <span style="font-size:15px;font-weight:900;letter-spacing:-.05em;color:var(--text)">Loksite</span>
+        </div>
+        <div class="footer-tagline">La plateforme IA pour sites web des commerces locaux.</div>
+        <div style="margin-top:12px;font-size:12px;color:var(--t3)">
+          <a href="#contact" style="color:var(--pr);text-decoration:none">Nous contacter →</a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <div>
+          <div class="footer-col-title">Plateforme</div>
+          <div class="footer-col-links">
+            <a href="#editeur" class="footer-col-link">Éditeur IA</a>
+            <a href="#fonctionnalites" class="footer-col-link">Fonctionnalités</a>
+            <button onclick="openAuth()" class="footer-col-link" style="background:none;border:none;cursor:pointer;text-align:left;padding:0;font-family:var(--font);font-size:13px">Connexion</button>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <div class="footer-col-links">
+            <a href="#contact" class="footer-col-link">Demander une démo</a>
+            <a href="#contact" class="footer-col-link">Nous écrire</a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Légal</div>
+          <div class="footer-col-links">
+            <a href="#" class="footer-col-link">Mentions légales</a>
+            <a href="#" class="footer-col-link">Confidentialité</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 Loksite. Tous droits réservés.</div>
+      <div style="font-size:12px;color:var(--t3);display:flex;align-items:center;gap:5px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Connexion sécurisée SSL
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+'use strict';
+const sb = window.supabase.createClient(
+  'https://qhnofvfgutsdgbfwhupg.supabase.co',
+  'sb_publishable_fJ-oHwhpaB0pBRwMgdwFXQ_GY2Ad9GY'
+);
+
+/* ══ NAV SCROLL ══ */
+const navEl = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  navEl.classList.toggle('scrolled', window.scrollY > 20);
+}, {passive:true});
+
+/* ══ SCROLL REVEAL ══ */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:.1, rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+/* ══ SMOOTH SCROLL ══ */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth',block:'start'}); }
+  });
+});
+
+/* ══ SHOWCASE TABS ══ */
+
+
+/* ══ CONTACT FORM ══ */
+async function cfSubmit() {
+  const btn = document.getElementById('cf-btn');
+  const nom = document.getElementById('cf-nom').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  const msg = document.getElementById('cf-msg').value.trim();
+  if(!nom || !email || !msg) { alert('Veuillez remplir au minimum votre nom, email et message.'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span style="animation:rot .65s linear infinite;display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%"></span> Envoi…';
+  const soc = document.getElementById('cf-soc').value.trim();
+  const tel = document.getElementById('cf-tel').value.trim();
+
+  // Déclenche le webhook n8n : envoie l'email de bienvenue (vidéos + lien rdv) au visiteur.
+  // ⚠️ Remplacer par l'URL réelle affichée dans le node "Webhook formulaire contact" une fois le workflow activé.
+  try {
+    await fetch('https://accounting-dating-oils-jacket.trycloudflare.com/webhook/contact-demo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nom, email, soc, tel, msg })
+    });
+  } catch(e) { console.warn('[contact] webhook indisponible', e); }
+
+  const sub = encodeURIComponent('Demande démo Loksite — ' + nom);
+  const body = encodeURIComponent('Nom: '+nom+'\nÉtablissement: '+(soc||'—')+'\nEmail: '+email+'\nTél: '+(tel||'—')+'\n\n'+msg);
+  setTimeout(() => { window.location.href = 'mailto:merlot.axeltk@gmail.com?subject='+sub+'&body='+body; }, 300);
+  setTimeout(() => {
+    document.getElementById('cf-fields').style.display = 'none';
+    document.getElementById('cf-ok').classList.add('show');
+  }, 900);
+}
+
+/* ══════════════════════════════════════
+   AUTH MODAL — 2FA : mot de passe + OTP
+══════════════════════════════════════ */
+let authEmail = '';
+let authTimer = null;
+
+function openAuth() {
+  document.getElementById('auth-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('auth-email').focus(), 100);
+}
+
+function closeAuth() {
+  document.getElementById('auth-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function overlayClose(e) {
+  if(e.target === document.getElementById('auth-overlay')) closeAuth();
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') closeAuth();
+  if(e.key === 'Enter') {
+    if(document.getElementById('auth-step-1').classList.contains('on')) authLogin();
+  }
+});
+
+function authTogglePass() {
+  const inp = document.getElementById('auth-pass');
+  const off = document.getElementById('auth-eye-off');
+  const on  = document.getElementById('auth-eye-on');
+  const show = inp.type === 'text';
+  inp.type = show ? 'password' : 'text';
+  off.style.display = show ? 'block' : 'none';
+  on.style.display  = show ? 'none'  : 'block';
+  inp.focus();
+}
+
+function authErr(id, msg) {
+  const el = document.getElementById(id);
+  document.getElementById(id+'-msg').textContent = msg;
+  el.classList.add('on');
+  setTimeout(() => el.classList.remove('on'), 5500);
+}
+function authHideErr(id) { document.getElementById(id).classList.remove('on'); }
+
+function authLoad(btnId, spinId, lblId, on, lbl, arrId) {
+  const btn   = document.getElementById(btnId);
+  const spin  = document.getElementById(spinId);
+  const lblEl = document.getElementById(lblId);
+  const arr   = arrId ? document.getElementById(arrId) : null;
+  btn.disabled = on;
+  spin.style.display = on ? 'block' : 'none';
+  if(arr)   arr.style.display  = on ? 'none' : '';
+  if(lblEl) lblEl.textContent  = lbl;
+}
+
+/* ══ ÉTAPE 1 — Email + mot de passe ══ */
+async function authLogin() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass  = document.getElementById('auth-pass').value;
+  if(!email || !email.includes('@')) { authErr('ae1', 'Adresse email invalide.'); return; }
+  if(!pass) { authErr('ae1', 'Veuillez entrer votre mot de passe.'); return; }
+  authHideErr('ae1');
+  authLoad('auth-btn-send','auth-spin-1','auth-send-lbl', true, 'Connexion…', 'auth-send-arr');
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+
+  if(error) {
+    authLoad('auth-btn-send','auth-spin-1','auth-send-lbl', false, 'Se connecter', 'auth-send-arr');
+    const m = error.message.toLowerCase();
+    if(m.includes('invalid') || m.includes('credentials') || m.includes('password'))
+      authErr('ae1', 'Email ou mot de passe incorrect.');
+    else if(m.includes('not found') || m.includes('user'))
+      authErr('ae1', 'Aucun compte associé à cet email.');
+    else
+      authErr('ae1', 'Erreur : ' + error.message);
+    return;
+  }
+
+  await authRoute(data.user.id);
+}
+
+function authGoBack() {
+  document.getElementById('auth-step-2').classList.remove('on');
+  document.getElementById('auth-step-1').classList.add('on');
+  clearInterval(authTimer);
+  authResetOTP();
+  authHideErr('ae2');
+  document.getElementById('ao2').classList.remove('on');
+  document.getElementById('auth-pass').value = '';
+}
+
+function authInitOTP() {
+  const inputs = document.querySelectorAll('.auth-otp-inp');
+  inputs.forEach((inp, i) => {
+    inp.addEventListener('input', e => {
+      const v = e.target.value.replace(/[^0-9]/g,'');
+      e.target.value = v;
+      e.target.classList.toggle('filled', v.length > 0);
+      if(v && i < 5) inputs[i+1].focus();
+      if(authGetOTP().length === 6) authVerifyOTP();
+    });
+    inp.addEventListener('keydown', e => {
+      if(e.key==='Backspace' && !inp.value && i>0){ inputs[i-1].focus(); inputs[i-1].value=''; inputs[i-1].classList.remove('filled'); }
+      if(e.key==='ArrowLeft'  && i>0) inputs[i-1].focus();
+      if(e.key==='ArrowRight' && i<5) inputs[i+1].focus();
+    });
+    inp.addEventListener('paste', e => {
+      e.preventDefault();
+      const txt = (e.clipboardData||window.clipboardData).getData('text').replace(/[^0-9]/g,'').slice(0,6);
+      txt.split('').forEach((ch,j) => { if(inputs[j]){ inputs[j].value=ch; inputs[j].classList.add('filled'); } });
+      if(txt.length===6){ inputs[5].focus(); setTimeout(authVerifyOTP,80); }
+      else if(inputs[txt.length]) inputs[txt.length].focus();
+    });
+  });
+}
+
+function authGetOTP()   { return Array.from(document.querySelectorAll('.auth-otp-inp')).map(i=>i.value).join(''); }
+function authResetOTP() { document.querySelectorAll('.auth-otp-inp').forEach(i=>{ i.value=''; i.classList.remove('filled','shake'); }); }
+function authShakeOTP() { document.querySelectorAll('.auth-otp-inp').forEach(i=>{ i.classList.add('shake'); setTimeout(()=>i.classList.remove('shake'),400); }); }
+
+/* ══ ÉTAPE 2 — Vérifier l'OTP ══ */
+async function authVerifyOTP() {
+  const token = authGetOTP();
+  if(token.length < 6) return;
+  authHideErr('ae2');
+  authLoad('auth-btn-verify','auth-spin-2','auth-verify-lbl', true, 'Vérification…', null);
+
+  const { data, error } = await sb.auth.verifyOtp({ email: authEmail, token, type: 'email' });
+
+  if(error) {
+    authLoad('auth-btn-verify','auth-spin-2','auth-verify-lbl', false, 'Confirmer', null);
+    authShakeOTP(); authResetOTP();
+    document.getElementById('aotp-0').focus();
+    authErr('ae2', 'Code incorrect ou expiré. Vérifiez votre boîte mail.');
+    return;
+  }
+
+  authLoad('auth-btn-verify','auth-spin-2','auth-verify-lbl', true, 'Connexion…', null);
+  await authRoute(data.user.id);
+}
+
+async function authRoute(uid) {
+  const {data:p} = await sb.from('profiles').select('role,espace_url').eq('id',uid).single();
+  if(!p){ authErr('ae2','Profil introuvable. Contactez Loksite.'); authLoad('auth-btn-verify','auth-spin-2','auth-verify-lbl',false,'Confirmer',null); return; }
+  if(p.espace_url){ window.location.href=p.espace_url; return; }
+  authErr('ae2','Espace introuvable. Contactez Loksite.');
+  authLoad('auth-btn-verify','auth-spin-2','auth-verify-lbl',false,'Confirmer',null);
+}
+
+function authStartTimer() {
+  let secs = 60;
+  const n=document.getElementById('auth-timer-n'), txt=document.getElementById('auth-timer-txt'), btn=document.getElementById('auth-resend-btn');
+  btn.disabled=true; txt.style.display=''; clearInterval(authTimer);
+  authTimer=setInterval(()=>{ secs--; if(n)n.textContent=secs; if(secs<=0){ clearInterval(authTimer); if(txt)txt.style.display='none'; if(btn)btn.disabled=false; } },1000);
+}
+
+async function authResend() {
+  document.getElementById('ao2').classList.remove('on');
+  const {error}=await sb.auth.signInWithOtp({email:authEmail,options:{shouldCreateUser:false}});
+  if(error){ authErr('ae2','Erreur lors du renvoi.'); return; }
+  authResetOTP(); document.getElementById('aotp-0').focus();
+  document.getElementById('ao2').classList.add('on');
+  setTimeout(()=>document.getElementById('ao2').classList.remove('on'),3000);
+  authStartTimer();
+}
+
+window.addEventListener('load', async () => {
+  try { await sb.auth.signOut(); } catch(e) {}
+  authInitOTP();
+});
+</script>
+
+
+
+
+
+
+
+<script>
+function scTab(id) {
+  document.querySelectorAll('.sc-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.sc-screen').forEach(function(s){ s.classList.remove('active'); });
+  var el = document.getElementById('sct-' + id);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.sc-tab').forEach(function(t){
+    if (t.getAttribute('onclick') && t.getAttribute('onclick').indexOf("'" + id + "'") > -1) t.classList.add('active');
+  });
+}
+</script>
+
+
+
+<!-- Loksite Landing Tracker v3 -->
+<script>
+(function() {
+  if (window.self !== window.top) return;
+  var SB = "https://qhnofvfgutsdgbfwhupg.supabase.co";
+  var K = "sb_publishable_fJ-oHwhpaB0pBRwMgdwFXQ_GY2Ad9GY";
+  var H = { "Content-Type": "application/json", "apikey": K, "Authorization": "Bearer " + K, "Prefer": "return=minimal" };
+
+  // Session ID = nouveau par onglet (compte les sessions)
+  var sid = "s_" + Math.random().toString(36).slice(2) + "_" + Date.now().toString(36);
+
+  // Visitor ID = persistant par appareil (compte les visiteurs uniques)
+  var vid = localStorage.getItem("lk_vid");
+  if (!vid) { vid = "v_" + Math.random().toString(36).slice(2) + "_" + Date.now().toString(36); localStorage.setItem("lk_vid", vid); }
+
+  var device = /Mobi|Android/i.test(navigator.userAgent) ? "mobile" : /iPad|Tablet/i.test(navigator.userAgent) ? "tablette" : "desktop";
+  var referrer = document.referrer.includes("google") ? "Organique"
+    : (document.referrer.includes("facebook") || document.referrer.includes("instagram") || document.referrer.includes("tiktok")) ? "Social"
+    : document.referrer === "" ? "Direct" : "Autre";
+  var start = Date.now();
+
+  // Pageview — client_id NULL + visitor_id pour les uniques
+  fetch(SB + "/rest/v1/analytics_events", {
+    method: "POST", headers: H,
+    body: JSON.stringify({ client_id: null, page: location.pathname, referrer: referrer, device: device, session_id: sid, visitor_id: vid, duration: 0 })
+  }).catch(function(){});
+
+  // Durée : PATCH toutes les 15s
+  setInterval(function() {
+    if (document.hidden) return;
+    fetch(SB + "/rest/v1/analytics_events?session_id=eq." + sid, {
+      method: "PATCH", headers: H,
+      body: JSON.stringify({ duration: Math.round((Date.now() - start) / 1000) })
+    }).catch(function(){});
+  }, 15000);
+
+  // Clics sections (CTA tracking)
+  document.addEventListener("click", function(ev) {
+    var link = ev.target.closest("a[href^='#']");
+    if (!link) return;
+    var section = (link.getAttribute("href") || "").replace("#","");
+    if (section) {
+      fetch(SB + "/rest/v1/click_events", {
+        method: "POST", headers: H,
+        body: JSON.stringify({ client_id: null, section: section, session_id: sid, created_at: new Date().toISOString() })
+      }).catch(function(){});
+    }
+  });
+
+  // Tracking connexions + démo — fetch avec keepalive (survit aux redirections)
+  function trackEvent(url, body) {
+    try {
+      fetch(url, { method: "POST", headers: H, body: JSON.stringify(body), keepalive: true }).catch(function(){});
+    } catch(e) {}
+  }
+  document.addEventListener("click", function(ev) {
+    var btn = ev.target.closest("a, button");
+    if (!btn) return;
+    var txt = (btn.textContent || "").toLowerCase().trim();
+    // Connexion (Se connecter / Connexion)
+    if (txt.includes("se connecter") || txt.includes("connexion") || txt === "login") {
+      trackEvent(SB + "/rest/v1/analytics_events", { client_id: null, page: "/connexion", session_id: sid, visitor_id: vid, device: device, referrer: "login_click", duration: 0 });
+    }
+    // Demande de démo / contact
+    if (txt.includes("démo") || txt.includes("demo") || txt.includes("contact") || txt.includes("demander") || txt.includes("essayer")) {
+      trackEvent(SB + "/rest/v1/page_requests", { page_name: "Demande depuis landing", page_type: "demo", description: txt.substring(0,100), status: "pending" });
+    }
+  }, true);
+})();
+</script>
+</body>
+</html>
