@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Réservez votre rendez-vous — Loksite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:       #07090E;
+  --bg2:      #0B0E16;
+  --s1:       #11141D;
+  --s1-2:     #171B27;
+  --text:     #F5F7FA;
+  --t2:       #98A2B8;
+  --t3:       #5C677E;
+  --pr:       #6D5DFC;
+  --pr2:      #5849e0;
+  --pr-light: rgba(109,93,252,.14);
+  --blue:     #4F8CFF;
+  --blue2:    #2F6FE0;
+  --blue-light: rgba(79,140,255,.14);
+  --green:    #22C55E;
+  --red:      #EF4444;
+  --border:   rgba(255,255,255,.07);
+  --border2:  rgba(255,255,255,.13);
+  --sh-md:    0 4px 16px rgba(0,0,0,.4), 0 1px 4px rgba(0,0,0,.3);
+  --sh-lg:    0 12px 48px rgba(0,0,0,.45), 0 4px 16px rgba(0,0,0,.3);
+  --glow-pr:  0 0 90px -10px rgba(109,93,252,.45);
+  --font:     'Sora', system-ui, sans-serif;
+  --mono:     'JetBrains Mono', monospace;
+  --r:        14px;
+  --r-lg:     22px;
+  --r-xl:     30px;
+  --ease:     cubic-bezier(.4,0,.2,1);
+  --spring:   cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.5;
+  min-height:100vh;
+}
+
+/* ── BACKDROP GLOW ── */
+.backdrop{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.backdrop::before{
+  content:'';position:absolute;top:-220px;left:50%;transform:translateX(-50%);
+  width:900px;height:700px;background:radial-gradient(ellipse,rgba(109,93,252,.16) 0%,transparent 65%);
+}
+.backdrop::after{
+  content:'';position:absolute;bottom:-260px;right:-180px;
+  width:700px;height:700px;background:radial-gradient(ellipse,rgba(79,140,255,.1) 0%,transparent 65%);
+}
+
+/* ── HEADER ── */
+.top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;max-width:1080px;margin:0 auto;padding:26px 24px}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo-mark{width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-logo-mark svg{width:30px;height:30px;display:block}
+.nav-logo-name{font-size:16px;font-weight:900;color:var(--text);letter-spacing:-.05em}
+.back-link{
+  display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--t2);
+  text-decoration:none;transition:color .15s;
+}
+.back-link:hover{color:var(--text)}
+
+/* ── HERO ── */
+.hero{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:28px 24px 0;text-align:center}
+.tag{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--pr);background:var(--pr-light);border:1px solid rgba(109,93,252,.2);
+  padding:5px 12px;border-radius:20px;margin-bottom:20px;
+}
+.tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--pr)}
+.hero h1{
+  font-size:clamp(30px,5vw,46px);font-weight:900;letter-spacing:-.04em;line-height:1.08;
+  margin-bottom:16px;
+}
+.hero h1 em{color:var(--pr);font-style:normal}
+.hero p{
+  font-size:15.5px;color:var(--t2);max-width:480px;margin:0 auto 36px;line-height:1.65;
+}
+
+/* ── TRUST ROW ── */
+.trust-row{
+  display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap;
+  margin-bottom:48px;
+}
+.trust-item{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--t2);font-weight:500}
+.trust-icon{width:30px;height:30px;background:var(--pr-light);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--pr)}
+
+/* ── BOOKING CARD ── */
+.book-wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:0 20px 100px}
+.book-card{
+  background:var(--s1);border:1px solid var(--border);border-radius:var(--r-xl);
+  box-shadow:var(--sh-lg), var(--glow-pr);overflow:hidden;
+}
+.book-card-hd{
+  padding:22px 28px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+}
+.book-card-hd-left{display:flex;align-items:center;gap:12px}
+.book-icon{
+  width:38px;height:38px;border-radius:11px;background:var(--blue-light);color:var(--blue);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.book-card-hd h2{font-size:15.5px;font-weight:800;letter-spacing:-.02em}
+.book-card-hd span{font-size:12.5px;color:var(--t3);display:block;margin-top:1px}
+.live-dot{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--green);font-family:var(--mono)}
+.live-dot::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(34,197,94,.5);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.45)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+
+.book-body{padding:28px}
+
+/* ── DAY STRIP ── */
+.day-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:24px;scrollbar-width:thin}
+.day-strip::-webkit-scrollbar{height:5px}
+.day-strip::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.day-pill{
+  flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:10px 16px;border-radius:14px;border:1px solid var(--border);background:var(--s1-2);
+  cursor:pointer;transition:all .15s var(--ease);font-family:var(--font);color:var(--text);
+  min-width:74px;
+}
+.day-pill:hover{border-color:rgba(109,93,252,.35)}
+.day-pill.on{background:var(--pr-light);border-color:rgba(109,93,252,.45);box-shadow:0 0 0 1px rgba(109,93,252,.25)}
+.day-pill .dp-wk{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}
+.day-pill.on .dp-wk{color:var(--pr)}
+.day-pill .dp-num{font-size:18px;font-weight:800}
+.day-pill .dp-mo{font-size:10.5px;color:var(--t3)}
+
+/* ── SLOT GRID ── */
+.slot-label{font-size:12.5px;font-weight:700;color:var(--t2);margin-bottom:12px;letter-spacing:.02em}
+.slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-bottom:6px}
+.slot-btn{
+  padding:11px 8px;border-radius:11px;border:1px solid var(--border);background:var(--s1-2);
+  color:var(--text);font-family:var(--mono);font-size:13px;font-weight:500;cursor:pointer;
+  transition:all .15s var(--ease);
+}
+.slot-btn:hover:not(:disabled){border-color:rgba(109,93,252,.45);background:var(--pr-light);color:var(--pr)}
+.slot-btn.on{background:var(--pr);border-color:var(--pr);color:#fff;font-weight:700}
+.slot-empty{color:var(--t3);font-size:13.5px;padding:20px 0;text-align:center}
+
+/* ── FORM ── */
+.book-form{margin-top:26px;padding-top:26px;border-top:1px solid var(--border);display:none}
+.book-form.on{display:block}
+.bf-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.bf-field{display:flex;flex-direction:column;gap:6px}
+.bf-field.full{grid-column:1/-1}
+.bf-field label{font-size:12.5px;font-weight:700;color:var(--t2)}
+.bf-field input,.bf-field textarea,.bf-field select{
+  background:var(--s1-2);border:1px solid var(--border);border-radius:10px;color:var(--text);
+  padding:11px 13px;font-family:var(--font);font-size:14px;outline:none;
+  transition:border-color .15s var(--ease),box-shadow .15s var(--ease);
+}
+.bf-field input:hover,.bf-field textarea:hover,.bf-field select:hover{border-color:var(--border2)}
+.bf-field input:focus,.bf-field textarea:focus,.bf-field select:focus{
+  border-color:var(--pr);box-shadow:0 0 0 3px rgba(109,93,252,.16);
+}
+.bf-field input::placeholder,.bf-field textarea::placeholder{color:var(--t3)}
+.bf-field textarea{resize:vertical;min-height:70px}
+.bf-field select{
+  appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:38px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2398A2B8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;background-size:15px;
+}
+.bf-field select option{background:var(--s1);color:var(--text)}
+.bf-field[hidden]{display:none}
+.bf-hp{position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none}
+.bf-submit{
+  width:100%;padding:14px;border:none;border-radius:12px;background:var(--pr);color:#fff;
+  font-family:var(--font);font-size:14.5px;font-weight:800;cursor:pointer;transition:all .15s var(--ease);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.bf-submit:hover:not(:disabled){background:var(--pr2);transform:translateY(-1px)}
+.bf-submit:disabled{opacity:.6;cursor:not-allowed}
+.bf-msg{font-size:13px;padding:10px 14px;border-radius:10px;margin-top:12px;display:none}
+.bf-msg.on{display:block}
+.bf-msg.err{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
+.bf-recap{font-size:12.5px;color:var(--t2);margin-bottom:16px;padding:11px 14px;background:var(--s1-2);border-radius:10px}
+.bf-recap b{color:var(--text)}
+
+/* ── SUCCESS STATE ── */
+.book-success{display:none;text-align:center;padding:20px 10px}
+.book-success.on{display:block}
+.bs-icon{
+  width:64px;height:64px;border-radius:50%;background:rgba(34,197,94,.14);color:var(--green);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 18px;
+}
+.book-success h3{font-size:19px;font-weight:800;margin-bottom:10px}
+.book-success p{color:var(--t2);font-size:14px;max-width:380px;margin:0 auto;line-height:1.6}
+
+.book-footer{
+  padding:16px 28px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:12px;color:var(--t3);
+}
+
+@media(max-width:640px){
+  .top{padding:20px 18px}
+  .trust-row{gap:18px}
+  .book-body{padding:20px}
+  .book-card-hd{padding:18px 20px}
+  .book-footer{padding:14px 20px;text-align:center}
+  .bf-grid{grid-template-columns:1fr}
+  /* Sous 16px, iOS zoome à chaque focus et décale la page. */
+  .bf-field input,.bf-field textarea{font-size:16px}
+}
+
+/* ── FOCUS CLAVIER ──
+   Les champs signalent le focus par leur bordure ; les boutons, eux,
+   n'avaient aucun repère au clavier. */
+.day-pill:focus-visible,.slot-btn:focus-visible,.bf-submit:focus-visible,
+.back-link:focus-visible,.nav-logo:focus-visible{
+  outline:2px solid var(--pr);outline-offset:2px;
+}
+.slot-btn:disabled{opacity:.28;cursor:not-allowed;text-decoration:line-through}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+</style>
+</head>
+<body>
+
+<div class="backdrop"></div>
+
+<div class="top">
+  <a href="https://loksite.github.io" class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="22" fill="#6D5DFC"/>
+        <rect x="18" y="18" width="16" height="56" rx="4" fill="rgba(210,205,255,0.92)"/>
+        <rect x="18" y="58" width="46" height="16" rx="4" fill="rgba(210,205,255,0.92)"/>
+        <rect x="48" y="18" width="34" height="34" rx="7" fill="rgba(210,205,255,0.75)"/>
+        <path d="M65 26 L66.5 31.5 L72 33 L66.5 34.5 L65 40 L63.5 34.5 L58 33 L63.5 31.5 Z" fill="#6D5DFC" opacity="0.9"/>
+      </svg>
+    </div>
+    <span class="nav-logo-name">Loksite</span>
+  </a>
+  <a href="https://loksite.github.io" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Retour au site
+  </a>
+</div>
+
+<div class="hero">
+  <div class="tag reveal">Premier rendez-vous</div>
+  <h1 class="reveal reveal-delay-1">Réservez votre <em>rendez-vous</em>.</h1>
+  <p class="reveal reveal-delay-2">Choisissez un créneau qui vous convient. On vous présente la plateforme, on répond à toutes vos questions, et on commence ensemble la configuration de votre site internet.</p>
+
+  <div class="trust-row reveal reveal-delay-2">
+    <div class="trust-item">
+      <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      Présentation de la plateforme
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+      Vos questions, en direct
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      On démarre votre site
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+      Gratuit
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      Sans engagement
+    </div>
+  </div>
+</div>
+
+<div class="book-wrap">
+  <div class="book-card reveal reveal-delay-2">
+    <div class="book-card-hd">
+      <div class="book-card-hd-left">
+        <div class="book-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="19" height="19"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div>
+          <h2>Choisissez votre créneau</h2>
+          <span id="rdv-entete-infos">Lun–Ven · 8h–18h · 15 min</span>
+        </div>
+      </div>
+      <div class="live-dot">DISPONIBILITÉS EN DIRECT</div>
+    </div>
+
+    <div class="book-body">
+
+      <!-- ÉTAPE 1+2 : jour puis créneau -->
+      <div id="rdv-picker">
+        <div class="slot-label">Choisissez un jour</div>
+        <div class="day-strip" id="rdv-days"></div>
+
+        <div class="slot-label" id="rdv-slots-label">Créneaux disponibles</div>
+        <div class="slot-grid" id="rdv-slots"></div>
+
+        <!-- ÉTAPE 3 : formulaire -->
+        <form class="book-form" id="rdv-form">
+          <div class="bf-recap" id="rdv-recap"></div>
+          <div class="bf-grid">
+            <div class="bf-field"><label for="rdv-name">Nom complet *</label><input type="text" id="rdv-name" required maxlength="120" autocomplete="name"></div>
+            <div class="bf-field"><label for="rdv-email">Email *</label><input type="email" id="rdv-email" required maxlength="200" autocomplete="email"></div>
+            <div class="bf-field"><label for="rdv-phone">Téléphone</label><input type="tel" id="rdv-phone" maxlength="40" autocomplete="tel"></div>
+            <div class="bf-field"><label for="rdv-company">Établissement</label><input type="text" id="rdv-company" maxlength="160" autocomplete="organization"></div>
+            <div class="bf-field">
+              <label for="rdv-referral">Qui vous a conseillé ? *</label>
+              <select id="rdv-referral" required>
+                <option value="" selected disabled>Choisissez une réponse</option>
+                <option value="famille">Famille</option>
+                <option value="reseaux">Réseaux</option>
+                <option value="ia">IA</option>
+                <option value="commerce">Commerce</option>
+                <option value="autre">Autre</option>
+              </select>
+            </div>
+            <div class="bf-field" id="rdv-referral-detail-field" hidden>
+              <label for="rdv-referral-detail" id="rdv-referral-detail-label">Précisez *</label>
+              <input type="text" id="rdv-referral-detail" maxlength="160" autocomplete="off">
+            </div>
+            <div class="bf-field full"><label for="rdv-message">Message (facultatif)</label><textarea id="rdv-message" maxlength="1000"></textarea></div>
+          </div>
+          <!-- honeypot anti-bot : ne jamais remplir, doit rester vide -->
+          <input type="text" id="rdv-hp" class="bf-hp" tabindex="-1" autocomplete="off">
+          <button type="submit" class="bf-submit" id="rdv-submit">Confirmer le rendez-vous</button>
+          <div class="bf-msg" id="rdv-msg"></div>
+        </form>
+      </div>
+
+      <!-- ÉTAPE 4 : confirmation -->
+      <div class="book-success" id="rdv-success">
+        <div class="bs-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="30" height="30"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <h3>Rendez-vous confirmé !</h3>
+        <p>Vous allez recevoir un email de confirmation avec la date, l'heure et le lien Google Meet pour rejoindre l'appel. À très vite !</p>
+      </div>
+
+    </div>
+
+    <div class="book-footer">
+      Une confirmation vous sera envoyée par email dès que votre créneau est validé.
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('visible'); });
+
+// ═══════════════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════════════
+const SUPABASE_URL = 'https://qhnofvfgutsdgbfwhupg.supabase.co';
+const SUPABASE_KEY  = 'sb_publishable_fJ-oHwhpaB0pBRwMgdwFXQ_GY2Ad9GY';
+const DAYS_SHOWN    = 15; // nombre de jours ouvrés affichés dans le bandeau
+
+// Réglages pilotés depuis loksite-admin.html (table appointment_settings,
+// lue ici via le RPC get_appointment_settings).
+//
+// Les valeurs ci-dessous ne sont qu'un REPLI si le RPC échoue — elles ne
+// font pas autorité. L'Edge Function book-appointment relit les mêmes
+// réglages en base et revalide le créneau : un visiteur qui forgerait une
+// requête hors horaires serait rejeté côté serveur.
+let SLOT_MINUTES     = 30;   // espacement réel entre deux créneaux
+let DUREE_AFFICHEE   = 15;   // durée annoncée au prospect
+let MIN_LEAD_HOURS   = 2;
+let MAX_HORIZON_DAYS = 30;
+let BUSINESS_START_H = 8;
+let BUSINESS_END_H   = 18;
+let JOURS_OUVRES     = [1, 2, 3, 4, 5]; // ISO : 1 = lundi … 7 = dimanche
+let DATES_FERMEES    = [];              // ['2026-08-15', …]
+
+const sb = window.supabase
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
+
+// ── état ──
+let joursOuvres = [];      // [{date: Date à minuit local, label...}]
+let jourSelectionne = 0;   // index dans joursOuvres
+let creneauxPris = new Set(); // Set d'ISO strings (slot_start) déjà pris pour le jour affiché
+let creneauChoisi = null;  // Date
+
+function ymdLocal(d){
+  const p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+
+function estJourOuvre(d){
+  // getDay() : 0 = dimanche. La base stocke du ISO : 1 = lundi … 7 = dimanche.
+  const iso = d.getDay() === 0 ? 7 : d.getDay();
+  if (JOURS_OUVRES.indexOf(iso) === -1) return false;
+  return DATES_FERMEES.indexOf(ymdLocal(d)) === -1;
+}
+
+async function chargerReglages(){
+  if (!sb) return;
+  try {
+    const { data, error } = await sb.rpc('get_appointment_settings');
+    if (error) throw error;
+    const c = Array.isArray(data) ? data[0] : data;
+    if (!c) return;
+    SLOT_MINUTES     = c.slot_minutes;
+    DUREE_AFFICHEE   = c.duree_affichee_min;
+    MIN_LEAD_HOURS   = c.min_lead_hours;
+    MAX_HORIZON_DAYS = c.max_horizon_days;
+    BUSINESS_START_H = c.business_start_h;
+    BUSINESS_END_H   = c.business_end_h;
+    if (Array.isArray(c.jours_ouvres) && c.jours_ouvres.length) JOURS_OUVRES = c.jours_ouvres;
+    DATES_FERMEES = (c.dates_fermees || []).map(String);
+  } catch (e) {
+    // Repli silencieux sur les valeurs par défaut : mieux vaut une grille
+    // approximative qu'une page vide. Le serveur reste seul juge du créneau.
+    console.warn('[rdv] réglages indisponibles, valeurs par défaut utilisées', e);
+  }
+}
+
+function majEntete(){
+  const el = document.getElementById('rdv-entete-infos');
+  if (!el) return;
+  const noms = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+  const actifs = JOURS_OUVRES.slice().sort((a, b) => a - b);
+  // Plage contiguë (« Lun–Ven ») ou énumération (« Lun, Mer, Ven »).
+  const contigu = actifs.every((v, i) => i === 0 || v === actifs[i - 1] + 1);
+  const jours = actifs.length === 0 ? '—'
+    : actifs.length === 1 ? noms[actifs[0] - 1]
+    : contigu ? noms[actifs[0] - 1] + '–' + noms[actifs[actifs.length - 1] - 1]
+    : actifs.map(v => noms[v - 1]).join(', ');
+  el.textContent = jours + ' · ' + BUSINESS_START_H + 'h–' + BUSINESS_END_H + 'h · ' + DUREE_AFFICHEE + ' min';
+}
+
+function genererJoursOuvres(){
+  const out = [];
+  const d = new Date(); d.setHours(0,0,0,0);
+  let cursor = new Date(d);
+  let safety = 0;
+  while (out.length < DAYS_SHOWN && safety < MAX_HORIZON_DAYS + 10) {
+    if (estJourOuvre(cursor)) out.push(new Date(cursor));
+    cursor.setDate(cursor.getDate() + 1);
+    safety++;
+  }
+  return out;
+}
+
+function formatJourPill(d){
+  const wk = d.toLocaleDateString('fr-FR', { weekday: 'short' }).replace('.', '');
+  const num = d.getDate();
+  const mo = d.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '');
+  return { wk, num, mo };
+}
+
+function renderDayStrip(){
+  const el = document.getElementById('rdv-days');
+  el.innerHTML = '';
+  joursOuvres.forEach(function(d, i){
+    const f = formatJourPill(d);
+    const btn = document.createElement('div');
+    btn.className = 'day-pill' + (i === jourSelectionne ? ' on' : '');
+    btn.innerHTML = '<span class="dp-wk">' + f.wk + '</span><span class="dp-num">' + f.num + '</span><span class="dp-mo">' + f.mo + '</span>';
+    btn.addEventListener('click', function(){ selectionnerJour(i); });
+    el.appendChild(btn);
+  });
+}
+
+function genererCreneauxDuJour(d){
+  const out = [];
+  const debutMin = BUSINESS_START_H * 60;
+  const finMin = BUSINESS_END_H * 60 - SLOT_MINUTES;
+  for (let m = debutMin; m <= finMin; m += SLOT_MINUTES) {
+    const dt = new Date(d);
+    dt.setHours(Math.floor(m / 60), m % 60, 0, 0);
+    out.push(dt);
+  }
+  return out;
+}
+
+async function chargerDisponibilites(jour){
+  if (!sb) { creneauxPris = new Set(); return; }
+  const from = new Date(jour); from.setHours(0,0,0,0);
+  const to = new Date(jour); to.setHours(23,59,59,999);
+  try {
+    const { data, error } = await sb.rpc('get_available_slots', {
+      p_from: from.toISOString(), p_to: to.toISOString()
+    });
+    if (error) throw error;
+    creneauxPris = new Set((data || []).map(function(r){ return new Date(r.slot_start).getTime(); }));
+  } catch (e) {
+    console.error('[rdv] chargerDisponibilites', e);
+    creneauxPris = new Set();
+  }
+}
+
+function renderSlots(){
+  const el = document.getElementById('rdv-slots');
+  const jour = joursOuvres[jourSelectionne];
+  const creneaux = genererCreneauxDuJour(jour);
+  const now = new Date();
+  const minInstant = now.getTime() + MIN_LEAD_HOURS * 3600000;
+
+  el.innerHTML = '';
+  let dispo = 0;
+  creneaux.forEach(function(dt){
+    const pris = creneauxPris.has(dt.getTime());
+    const tropTot = dt.getTime() < minInstant;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'slot-btn';
+    btn.textContent = dt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    if (pris || tropTot) {
+      btn.disabled = true;
+    } else {
+      dispo++;
+      btn.addEventListener('click', function(){ choisirCreneau(dt, btn); });
+    }
+    el.appendChild(btn);
+  });
+
+  if (dispo === 0) {
+    el.innerHTML = '<div class="slot-empty" style="grid-column:1/-1">Aucun créneau disponible ce jour-là — essayez un autre jour.</div>';
+  }
+}
+
+function selectionnerJour(i){
+  jourSelectionne = i;
+  creneauChoisi = null;
+  document.getElementById('rdv-form').classList.remove('on');
+  renderDayStrip();
+  chargerDisponibilites(joursOuvres[i]).then(renderSlots);
+}
+
+function choisirCreneau(dt, btnEl){
+  creneauChoisi = dt;
+  document.querySelectorAll('.slot-btn').forEach(function(b){ b.classList.remove('on'); });
+  btnEl.classList.add('on');
+
+  const recap = document.getElementById('rdv-recap');
+  const jourTxt = dt.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  const heureTxt = dt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  recap.innerHTML = 'Créneau sélectionné : <b>' + jourTxt + ' à ' + heureTxt + '</b> (' + DUREE_AFFICHEE + ' min)';
+
+  document.getElementById('rdv-form').classList.add('on');
+  document.getElementById('rdv-form').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ═══ « Qui vous a conseillé ? » ═══
+// Chaque origine sauf « Famille » demande une précision. Le champ n'est
+// requis que lorsqu'il est visible : un champ [hidden] marqué required
+// bloquerait la validation native sans pouvoir recevoir le focus.
+const REFERRAL_DETAILS = {
+  reseaux:  { label: 'Quel réseau ou quelle personne ?', ph: 'Instagram, TikTok, un ami…' },
+  ia:       { label: 'Quelle IA ?',                        ph: 'ChatGPT, Claude, Gemini…' },
+  commerce: { label: 'Quel commerce ?',                    ph: 'Nom du commerce' },
+  autre:    { label: 'Précisez la source',                 ph: 'Nom ou source' }
+};
+
+const referralSelect = document.getElementById('rdv-referral');
+const referralField  = document.getElementById('rdv-referral-detail-field');
+const referralLabel  = document.getElementById('rdv-referral-detail-label');
+const referralInput  = document.getElementById('rdv-referral-detail');
+
+function majChampReferral(){
+  const conf = REFERRAL_DETAILS[referralSelect.value];
+  if (conf) {
+    referralLabel.textContent = conf.label + ' *';
+    referralInput.placeholder = conf.ph;
+    referralInput.required = true;
+    referralField.hidden = false;
+  } else {
+    referralField.hidden = true;
+    referralInput.required = false;
+    referralInput.value = '';
+    referralInput.placeholder = '';
+  }
+}
+referralSelect.addEventListener('change', majChampReferral);
+majChampReferral();
+
+function afficherMsg(texte, type){
+  const el = document.getElementById('rdv-msg');
+  el.textContent = texte;
+  el.className = 'bf-msg on ' + (type || 'err');
+}
+
+document.getElementById('rdv-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  if (!creneauChoisi) return;
+
+  const submitBtn = document.getElementById('rdv-submit');
+  const payload = {
+    slot_start: creneauChoisi.toISOString(),
+    name: document.getElementById('rdv-name').value.trim(),
+    email: document.getElementById('rdv-email').value.trim(),
+    phone: document.getElementById('rdv-phone').value.trim(),
+    company: document.getElementById('rdv-company').value.trim(),
+    referral_source: referralSelect.value,
+    referral_detail: referralInput.required ? referralInput.value.trim() : '',
+    message: document.getElementById('rdv-message').value.trim(),
+    hp: document.getElementById('rdv-hp').value
+  };
+
+  if (!payload.name || !payload.email) { afficherMsg('Merci de renseigner votre nom et votre email.', 'err'); return; }
+  if (!payload.referral_source) { afficherMsg("Merci d'indiquer qui vous a conseillé.", 'err'); return; }
+  if (referralInput.required && !payload.referral_detail) { afficherMsg('Merci de préciser votre réponse.', 'err'); return; }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Envoi en cours…';
+
+  try {
+    const res = await fetch(SUPABASE_URL + '/functions/v1/book-appointment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+      body: JSON.stringify(payload)
+    });
+    const out = await res.json().catch(function(){ return {}; });
+
+    if (res.status === 409 || out.error === 'slot_taken') {
+      afficherMsg("Ce créneau vient d'être réservé par quelqu'un d'autre — merci d'en choisir un autre.", 'err');
+      creneauChoisi = null;
+      document.getElementById('rdv-form').classList.remove('on');
+      await chargerDisponibilites(joursOuvres[jourSelectionne]);
+      renderSlots();
+      return;
+    }
+    if (!res.ok || !out.ok) {
+      afficherMsg((out.details) || 'Une erreur est survenue, merci de réessayer.', 'err');
+      return;
+    }
+
+    // Succès
+    document.getElementById('rdv-picker').style.display = 'none';
+    document.getElementById('rdv-success').classList.add('on');
+  } catch (err) {
+    console.error('[rdv] submit', err);
+    afficherMsg('Impossible de contacter le serveur — vérifiez votre connexion et réessayez.', 'err');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Confirmer le rendez-vous';
+  }
+});
+
+// ── init ──
+// Les réglages sont chargés AVANT de dessiner quoi que ce soit : la grille
+// des jours dépend des jours ouvrés et des dates fermées, celle des heures
+// dépend des horaires et du pas. Dessiner d'abord afficherait brièvement
+// des créneaux inexacts.
+(async function init(){
+  await chargerReglages();
+  majEntete();
+  joursOuvres = genererJoursOuvres();
+  renderDayStrip();
+  if (!joursOuvres.length) {
+    document.getElementById('rdv-slots').innerHTML =
+      '<div class="slot-empty" style="grid-column:1/-1">Aucune disponibilité pour le moment — merci de revenir plus tard.</div>';
+    return;
+  }
+  await chargerDisponibilites(joursOuvres[jourSelectionne]);
+  renderSlots();
+})();
+</script>
+</body>
+</html>
