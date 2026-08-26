@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Politique cookies — Loksite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Instrument+Sans:wght@400;500;600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ═══ Page légale — même palette que le site ═══
+   Lisible avant d'être jolie : une colonne, une longueur de ligne
+   tenue, et rien qui distraie de ce qu'il y a à lire. */
+:root{
+  --bg:#FFFFFF; --surface:#F5F7FA;
+  --text:#0A0C10; --t2:#454C5E; --t3:#5F6879;
+  --pr:#1B4CFF; --border:rgba(10,12,16,.11);
+  --font:'Instrument Sans',system-ui,-apple-system,sans-serif;
+  --display:'Archivo',system-ui,-apple-system,sans-serif;
+  --mono:'Courier Prime',ui-monospace,'Courier New',monospace;
+  --r-card:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font);color:var(--t2);background:var(--bg);
+  line-height:1.7;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:68ch;margin:0 auto;padding:clamp(48px,7vw,88px) clamp(20px,6%,40px) 96px}
+a{color:var(--pr)}
+a:hover{text-decoration:underline}
+
+header{margin-bottom:clamp(32px,5vw,48px);padding-bottom:28px;border-bottom:1px solid var(--border)}
+.back{
+  display:inline-block;margin-bottom:26px;
+  font-family:var(--mono);font-weight:700;font-size:11px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--t3);
+  text-decoration:none;transition:color .16s cubic-bezier(.2,.8,.2,1);
+}
+.back:hover{color:var(--text);text-decoration:none}
+h1{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(2rem,4vw,2.6rem);line-height:1.1;letter-spacing:-.035em;
+  color:var(--text);margin-bottom:14px;
+}
+.updated{
+  font-family:var(--mono);font-weight:700;font-size:11px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--t3);opacity:1;
+}
+
+section{margin-top:clamp(34px,4vw,46px)}
+h2{
+  font-family:var(--display);font-weight:700;
+  font-size:1.25rem;line-height:1.25;letter-spacing:-.02em;
+  color:var(--text);margin-bottom:12px;
+}
+p,li{font-size:1rem;color:var(--t2)}
+p+p{margin-top:.9rem}
+strong{color:var(--text);font-weight:600}
+ul{margin:.7rem 0 0;padding-left:0;list-style:none}
+li{margin-bottom:.55rem;padding-left:22px;position:relative}
+li::before{
+  content:'';position:absolute;left:0;top:.62em;
+  width:6px;height:6px;border-radius:50%;background:var(--pr);
+}
+
+/* Mention à compléter : un repère franc, pas un post-it. */
+.todo{
+  display:inline-block;padding:.1rem .5rem;border-radius:6px;
+  background:var(--bg);border:1px dashed var(--pr);
+  font-family:var(--mono);font-weight:700;font-size:.8rem;
+  letter-spacing:.04em;color:var(--pr);
+}
+
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-card);padding:26px 28px;margin-top:clamp(36px,5vw,52px);
+}
+.card p,.card li{font-size:.95rem}
+
+footer{
+  margin-top:clamp(48px,6vw,72px);padding-top:26px;border-top:1px solid var(--border);
+  font-family:var(--mono);font-weight:700;font-size:11px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--t3);opacity:1;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="index.html">← Retour au site</a>
+    <h1>Politique de gestion des cookies</h1>
+    <div class="updated">Dernière mise à jour : août 2026</div>
+  </header>
+
+  <section>
+    <h2>1. Qu'est-ce qu'un cookie ?</h2>
+    <p>Un « cookie » (ou traceur) est un fichier ou un identifiant déposé sur votre appareil lorsque vous consultez un site. Sur ce site, nous n'utilisons pas de cookie de navigateur classique pour la mesure d'audience, mais un <strong>identifiant de visite stocké localement</strong> (localStorage) qui joue un rôle équivalent : il est donc soumis aux mêmes règles de consentement.</p>
+  </section>
+
+  <section>
+    <h2>2. Les traceurs que nous utilisons</h2>
+    <table>
+      <tr><th>Nom</th><th>Finalité</th><th>Type</th><th>Durée</th><th>Consentement</th></tr>
+      <tr><td><code>lk_consent</code></td><td>Mémoriser votre choix (accepter / refuser)</td><td>Essentiel</td><td>Persistant</td><td>Non requis</td></tr>
+      <tr><td><code>lk_vid</code></td><td>Identifiant de visite pour la mesure d'audience (visiteurs uniques, pages vues, durée)</td><td>Mesure d'audience</td><td>Persistant</td><td><strong>Requis</strong></td></tr>
+      <tr><td>Préférences (thème)</td><td>Mémoriser l'affichage clair/sombre</td><td>Essentiel</td><td>Persistant</td><td>Non requis</td></tr>
+      <tr><td>Session Supabase</td><td>Vous garder connecté à votre espace client</td><td>Essentiel</td><td>Session</td><td>Non requis</td></tr>
+    </table>
+    <p style="margin-top:1rem">Nous n'utilisons <strong>aucun cookie publicitaire</strong>, aucun pixel de réseau social (Facebook, TikTok…), aucun outil de profilage, et nous ne revendons ni ne partageons vos données à des tiers à des fins commerciales.</p>
+  </section>
+
+  <section>
+    <h2>3. Mesure d'audience — uniquement après consentement</h2>
+    <p>Le traceur de mesure d'audience (<code>lk_vid</code>) et les statistiques associées <strong>ne sont activés qu'après votre consentement explicite</strong>, via le bandeau affiché lors de votre première visite. Tant que vous n'avez pas cliqué sur « Accepter », <strong>aucun identifiant n'est déposé et aucune donnée de navigation n'est envoyée</strong>. Si vous cliquez sur « Refuser », le site fonctionne normalement, sans aucune mesure d'audience.</p>
+  </section>
+
+  <section>
+    <h2>4. Modifier ou retirer votre choix</h2>
+    <p>Vous pouvez changer d'avis à tout moment — retirer votre consentement est aussi simple que de le donner :</p>
+    <ul>
+      <li>en cliquant sur le lien <strong>« Cookies »</strong> en bas de page, qui rouvre le bandeau de choix ;</li>
+      <li>en supprimant les données du site depuis les réglages de votre navigateur.</li>
+    </ul>
+    <p class="card" style="margin-top:1.2rem">Vous pouvez rouvrir le bandeau de consentement dès maintenant :
+      <br><a class="btn" href="index.html" onclick="try{localStorage.removeItem('lk_consent')}catch(e){}">Revoir mes préférences cookies</a></p>
+  </section>
+
+  <section>
+    <h2>5. Contact</h2>
+    <p>Pour toute question sur cette politique ou sur vos données, écrivez-nous à <a href="mailto:merlot.axeltk@gmail.com">merlot.axeltk@gmail.com</a>. Voir aussi notre <a href="politique-de-confidentialite.html">politique de confidentialité</a> et nos <a href="mentions-legales.html">mentions légales</a>.</p>
+  </section>
+
+  <footer>
+    © 2026 Loksite — Tous droits réservés
+  </footer>
+</div>
+</body>
+</html>

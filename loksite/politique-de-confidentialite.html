@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Politique de confidentialité — Loksite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Instrument+Sans:wght@400;500;600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ═══ Page légale — même palette que le site ═══
+   Lisible avant d'être jolie : une colonne, une longueur de ligne
+   tenue, et rien qui distraie de ce qu'il y a à lire. */
+:root{
+  --bg:#FFFFFF; --surface:#F5F7FA;
+  --text:#0A0C10; --t2:#454C5E; --t3:#5F6879;
+  --pr:#1B4CFF; --border:rgba(10,12,16,.11);
+  --font:'Instrument Sans',system-ui,-apple-system,sans-serif;
+  --display:'Archivo',system-ui,-apple-system,sans-serif;
+  --mono:'Courier Prime',ui-monospace,'Courier New',monospace;
+  --r-card:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font);color:var(--t2);background:var(--bg);
+  line-height:1.7;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:68ch;margin:0 auto;padding:clamp(48px,7vw,88px) clamp(20px,6%,40px) 96px}
+a{color:var(--pr)}
+a:hover{text-decoration:underline}
+
+header{margin-bottom:clamp(32px,5vw,48px);padding-bottom:28px;border-bottom:1px solid var(--border)}
+.back{
+  display:inline-block;margin-bottom:26px;
+  font-family:var(--mono);font-weight:700;font-size:11px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--t3);
+  text-decoration:none;transition:color .16s cubic-bezier(.2,.8,.2,1);
+}
+.back:hover{color:var(--text);text-decoration:none}
+h1{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(2rem,4vw,2.6rem);line-height:1.1;letter-spacing:-.035em;
+  color:var(--text);margin-bottom:14px;
+}
+.updated{
+  font-family:var(--mono);font-weight:700;font-size:11px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--t3);opacity:1;
+}
+
+section{margin-top:clamp(34px,4vw,46px)}
+h2{
+  font-family:var(--display);font-weight:700;
+  font-size:1.25rem;line-height:1.25;letter-spacing:-.02em;
+  color:var(--text);margin-bottom:12px;
+}
+p,li{font-size:1rem;color:var(--t2)}
+p+p{margin-top:.9rem}
+strong{color:var(--text);font-weight:600}
+ul{margin:.7rem 0 0;padding-left:0;list-style:none}
+li{margin-bottom:.55rem;padding-left:22px;position:relative}
+li::before{
+  content:'';position:absolute;left:0;top:.62em;
+  width:6px;height:6px;border-radius:50%;background:var(--pr);
+}
+
+/* Mention à compléter : un repère franc, pas un post-it. */
+.todo{
+  display:inline-block;padding:.1rem .5rem;border-radius:6px;
+  background:var(--bg);border:1px dashed var(--pr);
+  font-family:var(--mono);font-weight:700;font-size:.8rem;
+  letter-spacing:.04em;color:var(--pr);
+}
+
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-card);padding:26px 28px;margin-top:clamp(36px,5vw,52px);
+}
+.card p,.card li{font-size:.95rem}
+
+footer{
+  margin-top:clamp(48px,6vw,72px);padding-top:26px;border-top:1px solid var(--border);
+  font-family:var(--mono);font-weight:700;font-size:11px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--t3);opacity:1;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="index.html">← Retour au site</a>
+    <h1>Politique de confidentialité</h1>
+    <div class="updated">Dernière mise à jour : juin 2026</div>
+  </header>
+
+  <section>
+    <h2>1. Qui sommes-nous</h2>
+    <p>Ce site est édité par <strong>Loksite</strong>, plateforme de gestion de présence digitale (sites vitrine, réservations en ligne, menus QR code, espace client) destinée aux commerces locaux. Pour toute question relative à vos données personnelles, vous pouvez nous contacter à l'adresse suivante : <a href="mailto:merlot.axeltk@gmail.com">merlot.axeltk@gmail.com</a>.</p>
+  </section>
+
+  <section>
+    <h2>2. Données collectées</h2>
+    <p>Lorsque vous utilisez ce site ou nos services, nous pouvons collecter les données suivantes :</p>
+    <ul>
+      <li>Informations transmises via le formulaire de contact ou de demande de démo (nom, e-mail, téléphone, message)</li>
+      <li>Données de connexion et d'utilisation de votre espace client si vous êtes abonné à Loksite (identifiants, informations de votre établissement, contenu publié sur votre site)</li>
+      <li>Données de facturation et de paiement (traitées par notre prestataire de paiement, GoCardless), dans le cadre d'un abonnement</li>
+      <li>Données de navigation anonymisées (pages visitées, durée de visite) à des fins statistiques</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Utilisation des données</h2>
+    <p>Ces informations sont utilisées exclusivement pour :</p>
+    <ul>
+      <li>Répondre à vos demandes de contact ou de démonstration</li>
+      <li>Fournir, gérer et facturer le service Loksite aux commerces abonnés</li>
+      <li>Assurer le support technique et la maintenance des sites clients</li>
+      <li>Améliorer le fonctionnement et le contenu de notre plateforme</li>
+    </ul>
+    <p>Vos données ne sont jamais vendues ni partagées avec des tiers à des fins commerciales.</p>
+  </section>
+
+  <section>
+    <h2>4. Conservation des données</h2>
+    <p>Les données liées à une demande de contact ou de démo sont conservées le temps nécessaire au traitement de votre demande, puis supprimées dans un délai raisonnable. Les données d'un compte client abonné sont conservées pendant toute la durée de l'abonnement, puis archivées ou supprimées dans les délais légaux après résiliation. Les données de navigation anonymisées sont conservées à des fins statistiques internes.</p>
+  </section>
+
+  <section>
+    <h2>5. Vos droits</h2>
+    <p>Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification, d'opposition et de suppression de vos données personnelles. Pour exercer ces droits, contactez-nous à <a href="mailto:merlot.axeltk@gmail.com">merlot.axeltk@gmail.com</a>.</p>
+  </section>
+
+  <section>
+    <h2>6. Cookies et traceurs</h2>
+    <p>Ce site utilise des traceurs techniques nécessaires à son fonctionnement (connexion à l'espace client, mémorisation de vos préférences) ainsi qu'un identifiant de mesure d'audience. Cet identifiant de mesure d'audience <strong>n'est déposé qu'après votre consentement explicite</strong> ; tant que vous n'avez pas accepté, aucune donnée de navigation n'est collectée. Aucun cookie publicitaire n'est utilisé. Le détail et la gestion de votre consentement sont décrits dans notre <a href="cookies.html">politique cookies</a>.</p>
+  </section>
+
+  <section>
+    <h2>7. Responsable du traitement et réclamation</h2>
+    <p>Le responsable du traitement de vos données est l'éditeur du site (voir <a href="mentions-legales.html">mentions légales</a>). Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés, vous pouvez adresser une réclamation à la CNIL (<a href="https://www.cnil.fr" target="_blank" rel="noopener">www.cnil.fr</a>).</p>
+  </section>
+
+  <footer>
+    © 2026 Loksite — Tous droits réservés · <a href="mentions-legales.html">Mentions légales</a> · <a href="cookies.html">Cookies</a>
+  </footer>
+</div>
+</body>
+</html>

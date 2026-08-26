@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Votre réponse — Loksite</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Instrument+Sans:wght@400;500;600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Instrument Sans', system-ui, -apple-system, sans-serif;
+    background:#F5F7FA;color:#0A0C10;
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;padding:24px;
+  }
+  .card{
+    max-width:440px;width:100%;text-align:center;background:#FFFFFF;
+    border:1px solid rgba(10,12,16,.11);border-radius:18px;
+    padding:44px 32px;
+  }
+  .icon{
+    width:64px;height:64px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;margin:0 auto 22px;
+  }
+  h1{font-family:'Archivo',system-ui,sans-serif;font-size:22px;font-weight:800;margin-bottom:12px;letter-spacing:-.02em;line-height:1.35}
+  p{color:#454C5E;font-size:14.5px;line-height:1.65}
+  .cta{
+    display:inline-block;margin-top:26px;color:#fff;
+    padding:13px 24px;border-radius:12px;text-decoration:none;
+    font-size:14px;font-weight:700;
+  }
+  .marque{margin-top:30px;font-family:'Courier Prime',ui-monospace,monospace;font-weight:700;font-size:11px;color:#5F6879;letter-spacing:.18em;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="icon" id="icone"></div>
+  <h1 id="titre">Un instant…</h1>
+  <p id="message"></p>
+  <a class="cta" id="cta" href="rendez-vous.html" style="display:none"></a>
+  <div class="marque">Loksite</div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   Page de retour après un clic dans un email de rendez-vous.
+
+   Pourquoi cette page existe : les Edge Functions Supabase ne
+   peuvent pas servir de HTML. Leur passerelle force
+   `Content-Type: text/plain` avec `nosniff` et une CSP en bac à
+   sable, pour empêcher l'hébergement de pages sur *.supabase.co.
+   L'Edge Function appointment-rsvp enregistre donc la réponse en
+   base, puis redirige ici avec ?etat=…
+
+   Cette page ne fait AUCUN appel réseau et ne décide de rien :
+   l'écriture a déjà eu lieu côté serveur, contrôlée par le
+   rsvp_token. Elle se contente d'afficher le résultat.
+══════════════════════════════════════════════════════════════ */
+(function () {
+  var COULEURS = { ok: '#0A0C10', info: '#1B4CFF', warn: '#0A0C10', err: '#C42B2B' };
+
+  var CHECK  = '<path d="M20 6L9 17l-5-5"/>';
+  var CROIX  = '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';
+  var ALERTE = '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>';
+
+  var ETATS = {
+    present: {
+      ton: 'ok', svg: CHECK,
+      titre: 'Votre présence est enregistrée',
+      message: 'Merci ! Nous vous attendons à l’heure prévue. Le lien de visioconférence se trouve dans votre email de confirmation.'
+    },
+    absent: {
+      ton: 'ok', svg: CHECK,
+      titre: 'Votre absence est enregistrée',
+      message: 'C’est noté, merci de nous avoir prévenus. Vous pouvez reprendre un créneau quand cela vous arrange.',
+      cta: 'Choisir un autre créneau'
+    },
+    annule: {
+      ton: 'ok', svg: CHECK,
+      titre: 'Votre rendez-vous est annulé',
+      message: 'C’est noté, vous ne recevrez plus de rappel. Si vous changez d’avis, un nouveau créneau vous attend quand vous voulez.',
+      cta: 'Choisir un autre créneau'
+    },
+    deja: {
+      ton: 'warn', svg: ALERTE,
+      titre: 'Réponse déjà enregistrée',
+      message: 'Votre réponse avait déjà été prise en compte — il n’y a rien de plus à faire.'
+    },
+    'deja-annule': {
+      ton: 'warn', svg: ALERTE,
+      titre: 'Rendez-vous déjà annulé',
+      message: 'Ce rendez-vous avait déjà été annulé. Vous pouvez en reprendre un quand vous le souhaitez.',
+      cta: 'Choisir un créneau'
+    },
+    passe: {
+      ton: 'warn', svg: ALERTE,
+      titre: 'Rendez-vous déjà passé',
+      message: 'Ce rendez-vous a déjà eu lieu, il n’est plus possible de le modifier.',
+      cta: 'Prendre un nouveau rendez-vous'
+    },
+    invalide: {
+      ton: 'err', svg: CROIX,
+      titre: 'Lien invalide',
+      message: 'Ce lien de rendez-vous n’est pas valide ou a expiré. Vérifiez que vous l’avez ouvert en entier depuis votre email.',
+      cta: 'Prendre un rendez-vous'
+    },
+    erreur: {
+      ton: 'err', svg: CROIX,
+      titre: 'Une erreur est survenue',
+      message: 'Nous n’avons pas pu enregistrer votre réponse. Merci de réessayer dans quelques instants depuis le lien de votre email.'
+    }
+  };
+
+  var cle = new URLSearchParams(location.search).get('etat') || 'invalide';
+  var e = ETATS[cle] || ETATS.invalide;
+  var couleur = COULEURS[e.ton];
+
+  document.title = e.titre + ' — Loksite';
+  document.getElementById('titre').textContent = e.titre;
+  document.getElementById('message').textContent = e.message;
+
+  var icone = document.getElementById('icone');
+  icone.style.background = couleur + '22';
+  icone.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="' + couleur +
+    '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28">' + e.svg + '</svg>';
+
+  if (e.cta) {
+    var a = document.getElementById('cta');
+    a.textContent = e.cta;
+    /* Le bouton reste bleu quel que soit l'état : le rouge signale
+       l'erreur sur l'icône, il ne doit pas peindre la seule action que
+       la personne peut encore faire — un bouton rouge se lit comme un
+       danger, pas comme une sortie. */
+    a.style.background = '#1B4CFF';
+    a.style.display = 'inline-block';
+  }
+})();
+</script>
+
+</body>
+</html>
